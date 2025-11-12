@@ -831,7 +831,8 @@
             const playlistId = extractPlaylistId(userInput);
             
             if (playlistId) {
-                // --- SPOTIFY YÜKLEME (HATA DÜZELTİLDİ: Doğru HTTPS URL kullanıldı) ---
+                // --- SPOTIFY YÜKLEME ---
+                // Düzeltilmiş HTTPS embed URL
                 const embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0&view=list&cover=1`;
                 
                 // HTML5 Oynatıcıyı durdur ve gizle
@@ -844,7 +845,8 @@
                 spotifyIframe.style.display = 'block';
 
                 if (!defaultId) {
-                    alert('Yeni Spotify çalma listesi yüklendi!');
+                    // YENİ UYARI MESAJI
+                    alert('Yeni Spotify çalma listesi yüklendi. Oynatmayı başlatmak için oynatıcının üzerindeki yeşil Oynat butonuna **manuel olarak** tıklamanız gerekebilir.');
                 }
                 sourceInput.value = ''; 
 
@@ -858,13 +860,16 @@
                 // HTML5 Oynatıcıyı göster ve kaynağını yükle
                 html5AudioPlayer.src = userInput;
                 html5AudioPlayer.load(); // Yeni kaynağı yükle
+                
+                // Otomatik oynatma kısıtlamasını yakala
                 html5AudioPlayer.play().catch(e => {
                      console.error("Otomatik oynatma engellendi:", e);
                 });
                 
                 html5AudioPlayer.style.display = 'block';
 
-                alert('Yeni ses dosyası yükleniyor (Otomatik başlamazsa, oynatıcıdan manuel başlatın).');
+                // YENİ UYARI MESAJI
+                alert('Yeni ses dosyası yüklendi. Tarayıcı kısıtlamaları nedeniyle otomatik başlamazsa, oynatıcıdan manuel başlatın.');
                 sourceInput.value = '';
 
             } else if (!defaultId) {
