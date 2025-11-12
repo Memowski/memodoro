@@ -305,7 +305,7 @@
             bottom: 60px; 
             right: 80px; 
             width: 300px; 
-            height: 420px; /* Daha fazla yer açıldı */
+            height: 300px; /* Yükseklik Spotify'a uyacak şekilde ayarlandı */
             background: rgba(30, 30, 30, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 10px;
@@ -339,11 +339,6 @@
         #close-music-btn:hover {
             opacity: 1;
         }
-        #music-panel iframe {
-            border-radius: 8px;
-            display: block;
-            margin-bottom: 10px;
-        }
         
         /* Spotify Özel Stiller */
         #spotify-connect-button {
@@ -357,7 +352,7 @@
             transition: background-color 0.3s;
             display: block;
             width: 90%;
-            margin: 10px auto;
+            margin: 15px auto;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
@@ -373,7 +368,7 @@
         }
         #spotify-content-area {
             margin-top: 10px;
-            max-height: 120px;
+            max-height: 200px; /* Yükseklik artırıldı */
             overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(0, 0, 0, 0.3);
@@ -400,21 +395,11 @@
 
     <div id="music-panel">
         <div id="music-header">
-            <span id="music-title">Odak Müzik</span>
+            <span id="music-title">Spotify Çalma Listeleri</span>
             <button id="close-music-btn">✖</button>
         </div>
         
-        <iframe src="https://open.spotify.com/embed/playlist/XXXXXXXXXXX?utm_source=generator" 
-                width="100%" 
-                height="150" 
-                frameBorder="0" 
-                allowfullscreen="" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy">
-        </iframe>
-
         <div id="spotify-section">
-            <h3 style="font-size: 1.1em; margin-bottom: 5px;">Spotify Çalma Listelerim</h3>
             <div id="spotify-status">Spotify'a bağlanılmadı.</div>
             <button id="spotify-connect-button">Spotify ile Giriş Yap</button>
             <div id="spotify-content-area" style="display: none;">
@@ -943,9 +928,6 @@
         translateUI('tr');
         updateTimerDisplay();
         changeBackground(BACKGROUND_OPTIONS[0].file);
-        
-        // NOT: checkSpotifyToken() çağrısı artık musicBtn'in click event'inde
-        // ve sayfa ilk yüklendiğinde (token varsa) yapılmaktadır.
     </script>
 </body>
 </html>
