@@ -1,8 +1,8 @@
-// api/callback.js
-// Bu işlemde "axios" kütüphanesi gereklidir. Vercel, bağımlılıkları otomatik olarak yönetir.
+// api/callback.js (Emin olmak için bu kodu tekrar kopyalayıp yapıştırabilirsiniz)
 
 const axios = require('axios');
-const querystring = require('querystring');
+// querystring kütüphanesini doğru şekilde import ettiğimizden emin olalım
+const querystring = require('querystring'); 
 
 const {
   SPOTIFY_CLIENT_ID,
@@ -15,10 +15,9 @@ module.exports = async (req, res) => {
 
   if (code) {
     try {
-      // Access Token'ı almak için Spotify'a POST isteği yap
       const response = await axios({
         method: 'post',
-        url: 'https://accounts.spotify.com/api/token',
+        url: 'https://accounts.spotify.com/api/token', // Burası doğru olmalı
         data: querystring.stringify({
           grant_type: 'authorization_code',
           code: code,
@@ -27,6 +26,7 @@ module.exports = async (req, res) => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization':
+            // Client ID ve Secret Base64 ile şifreleniyor
             'Basic ' +
             Buffer.from(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET).toString('base64'),
         },
@@ -34,22 +34,19 @@ module.exports = async (req, res) => {
 
       const { access_token } = response.data;
       
-      // Access Token'ı güvenli bir şekilde ana sayfaya yönlendirerek gönder
-      // Bu URL, index.html'deki JavaScript tarafından okunacaktır.
       res.writeHead(302, {
         'Location': `/?spotify_token=${access_token}#/spotify-connected`,
       });
       res.end();
 
     } catch (error) {
-        // Hata durumunda kullanıcıyı hata mesajıyla ana sayfaya yönlendir
+        console.error("Spotify Token Hata Detayı:", error.response ? error.response.data : error.message);
         res.writeHead(302, {
             'Location': '/?error=spotify_auth_failed',
         });
         res.end();
     }
   } else {
-    // Kod gelmezse hata ver
     res.writeHead(302, {
         'Location': '/?error=authorization_code_missing',
     });
