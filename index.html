@@ -5,70 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memodoro - YKS Odaklanma Zamanlayıcısı ve Spotify</title>
     <style>
-        /* CSS Kodları */
+        /* UI'yı Geri Yükleyen ve Düzenleyen CSS Kodları */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #e9ebee; /* Hafif Gri Arka Plan */
+            background-color: #f4f4f9;
             color: #333;
             margin: 0;
         }
         .container {
             background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 90%;
-            max-width: 500px;
+            max-width: 800px;
         }
         h1 {
-            color: #4a4a4a;
-            margin-bottom: 30px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
+            color: #007bff;
+            margin-bottom: 20px;
         }
         #timer {
-            font-size: 6em;
-            margin: 30px 0;
-            color: #28a745; /* Yeşil Renk */
-            font-weight: 700;
+            font-size: 5em;
+            margin: 20px 0;
+            color: #28a745;
         }
         .controls button {
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 12px 25px;
-            margin: 8px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.3s, transform 0.1s;
+            font-size: 1em;
+            transition: background-color 0.3s;
         }
         .controls button:hover {
             background-color: #0056b3;
-            transform: translateY(-1px);
         }
         #spotify-section {
-            margin-top: 40px;
+            margin-top: 30px;
             border-top: 1px solid #eee;
-            padding-top: 30px;
-            text-align: left;
+            padding-top: 20px;
         }
         #spotify-status {
             margin-bottom: 15px;
-            font-weight: 600;
+            font-weight: bold;
             color: #555;
-            text-align: center;
         }
         #spotify-connect-button {
-            background-color: #1DB954; /* Spotify Yeşil */
+            background-color: #1DB954;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -76,21 +68,20 @@
             font-size: 1em;
             cursor: pointer;
             transition: background-color 0.3s;
-            display: block;
-            width: 80%;
+            display: block; /* Butonu ortalamak için */
+            width: 60%;
             margin: 15px auto;
-            font-weight: bold;
         }
         #spotify-connect-button:hover {
             background-color: #179d49;
         }
         #spotify-content-area {
             margin-top: 20px;
-            max-height: 250px;
+            max-height: 250px; /* Eski haline göre daha az */
             overflow-y: auto;
             border: 1px solid #ddd;
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 5px;
         }
         .playlist-item {
             display: flex;
@@ -100,22 +91,17 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        .playlist-item:last-child {
-            border-bottom: none;
-        }
         .playlist-item:hover {
-            background-color: #f6f6f6;
+            background-color: #f9f9f9;
         }
         .playlist-item img {
-            width: 45px;
-            height: 45px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
             margin-right: 15px;
-            object-fit: cover;
         }
         .playlist-info {
             text-align: left;
-            flex-grow: 1;
         }
         .playlist-info h4 {
             margin: 0;
@@ -124,7 +110,7 @@
         }
         .playlist-info p {
             margin: 0;
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #777;
         }
     </style>
@@ -141,7 +127,7 @@
         </div>
 
         <div id="spotify-section">
-            <h2 style="font-size: 1.4em; color: #4a4a4a; text-align: center; margin-bottom: 20px;">Spotify Entegrasyonu</h2>
+            <h2>Spotify Entegrasyonu</h2>
             <div id="spotify-status">Spotify'a bağlanılmadı.</div>
             <button id="spotify-connect-button">Spotify ile Giriş Yap</button>
             
@@ -222,7 +208,6 @@
             if (isConnected) {
                 spotifyConnectButton.style.display = 'none';
                 spotifyStatus.textContent = 'Spotify\'a başarıyla bağlandı.';
-                // Eğer bağlantı başarılıysa, çalma listesi alanını göster
                 spotifyContentArea.style.display = 'block'; 
             } else {
                 spotifyConnectButton.style.display = 'block';
@@ -233,7 +218,6 @@
         }
 
         spotifyConnectButton.addEventListener('click', () => {
-            // API yolu, Vercel Serverless Function'ı tetikler
             window.location.href = '/api/login';
         });
 
@@ -247,7 +231,6 @@
                 // 1. URL'den yeni token alındı
                 localStorage.setItem('spotify_access_token', tokenFromUrl);
                 spotifyAccessToken = tokenFromUrl;
-                // URL'yi temizle
                 window.history.replaceState({}, document.title, window.location.pathname); 
                 updateSpotifyUI(true, "Giriş başarılı, çalma listeleri yükleniyor...");
                 fetchPlaylists(spotifyAccessToken);
@@ -274,7 +257,7 @@
             spotifyContentArea.innerHTML = '<p style="text-align: center; color: #aaa; padding-top: 10px;">Çalma listeleri yükleniyor...</p>';
             
             try {
-                // Burada kullandığınız endpoint (Spotify API adresi)
+                // API adresi
                 const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=5', {
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -285,10 +268,10 @@
                     const data = await response.json();
                     renderPlaylists(data.items);
                 } else if (response.status === 401) { 
-                    // 401 Unauthorized: Token Süresi Doldu/Geçersiz (KRİTİK HATA YAKALAMA)
+                    // 401 Unauthorized: Token Süresi Doldu/Geçersiz
                     console.error("Spotify Token Süresi Doldu veya Geçersiz. Yeniden Giriş Gerekiyor.");
                     updateSpotifyUI(false, "Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
-                    localStorage.removeItem('spotify_access_token'); // Eski token'ı sil
+                    localStorage.removeItem('spotify_access_token');
                     spotifyAccessToken = null;
                 } else {
                     // Diğer API hataları
