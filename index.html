@@ -6,17 +6,13 @@
     <title id="doc-title">YKS Zamanlayıcısı</title>
     
     <style>
-	/* Yeni: Sayfa Geçiş Animasyonu CSS'i */
-	@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-   to { opacity: 1; transform: translateY(0); }
-	}
+        /* Yeni: Sayfa Geçiş Animasyonu CSS'i */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-	body {
-    /* ... mevcut body stilleri ... */
-    animation: fadeIn 0.8s ease-out; /* Animasyonu uygula */
-	}        
-	/* Genel Font ve Merkezleme */
+        /* Genel Font ve Merkezleme */
         body {
             font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; 
             display: flex;
@@ -37,6 +33,8 @@
             background-position: center center;
             background-blend-mode: overlay;
             background-color: rgba(0, 0, 0, 0.3);
+            
+            animation: fadeIn 0.8s ease-out; /* Animasyonu uygula */
         }
 
         .container {
@@ -87,7 +85,7 @@
             color: #ffffff;
             font-weight: 400;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-            cursor: pointer; /* Düzenlenebilir olduğunu göstermek için */
+            cursor: pointer; 
         }
         
         /* --- ZAMANLAYICI MODLARI --- */
@@ -301,6 +299,51 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* --- MÜZİK PANELİ STİLİ --- */
+        #music-panel {
+            position: absolute;
+            bottom: 60px; 
+            right: 80px; 
+            width: 300px; 
+            height: 350px;
+            background: rgba(30, 30, 30, 0.95); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none; /* Varsayılan olarak gizli */
+            text-align: left; 
+        }
+        #music-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #music-title {
+            font-weight: 600;
+            color: #1ed760; /* Spotify Yeşili */
+        }
+        #close-music-btn {
+            background: none;
+            border: none;
+            color: white;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: opacity 0.2s;
+        }
+        #close-music-btn:hover {
+            opacity: 1;
+        }
+        #music-panel iframe {
+            border-radius: 8px;
+            display: block;
+        }
+
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
@@ -313,8 +356,25 @@
     
     <div class="bottom-right-controls">
         <a id="download-btn" href="download.html" title="Uygulamayı İndir">⬇️</a>
+        <button id="music-btn" title="Müzik Oynatıcı">🎵</button>
         <button id="fullscreen-btn" title="Tam Ekran Yap">⛶</button>
         <button id="menu-btn" title="Ayarlar">⚙️</button>
+    </div>
+
+    <div id="music-panel">
+        <div id="music-header">
+            <span id="music-title">Odak Müzik</span>
+            <button id="close-music-btn">✖</button>
+        </div>
+        <iframe src="https://open.spotify.com/embed/playlist/XXXXXXXXXXX?utm_source=generator" 
+                width="100%" 
+                height="300" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+        </iframe>
+        
     </div>
 
     <div id="settings-panel">
@@ -440,6 +500,10 @@
         const settingsPanel = document.getElementById('settings-panel');
         const bgOptionsContainer = document.getElementById('bg-options-container');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
+        
+        const musicBtn = document.getElementById('music-btn');
+        const musicPanel = document.getElementById('music-panel');
+        const closeMusicBtn = document.getElementById('close-music-btn');
 
 
         // Sabitler ve Değişkenler
@@ -482,7 +546,7 @@
                 } else if (shortBreakBtn.classList.contains('active')) {
                     currentDuration = SHORT_BREAK_DURATION;
                 } else if (longBreakBtn.classList.contains('active')) {
-                    currentDuration = LONG_BREAK_DURATION;
+                    currentDuration = LONG_BREAKURATION;
                 }
                 timeRemaining = currentDuration;
                 updateTimerDisplay();
@@ -665,6 +729,9 @@
         fullscreenBtn.addEventListener('click', toggleFullscreen);
 
         menuBtn.addEventListener('click', () => {
+            // Müzik paneli açıksa, kapat
+            musicPanel.style.display = 'none';
+
             if (settingsPanel.style.display === 'block') {
                 settingsPanel.style.display = 'none';
             } else {
@@ -676,6 +743,23 @@
                 renderBackgroundOptions();
                 settingsPanel.style.display = 'block';
             }
+        });
+        
+        // Müzik Menüsü Olay Dinleyicileri
+        musicBtn.addEventListener('click', () => {
+            // Ayarlar açıksa, kapat
+            settingsPanel.style.display = 'none';
+
+            // Müzik panelini aç/kapat
+            if (musicPanel.style.display === 'block') {
+                musicPanel.style.display = 'none';
+            } else {
+                musicPanel.style.display = 'block';
+            }
+        });
+        
+        closeMusicBtn.addEventListener('click', () => {
+            musicPanel.style.display = 'none';
         });
 
         startBtn.addEventListener('click', startTimer);
