@@ -339,6 +339,7 @@
         #close-music-btn:hover {
             opacity: 1;
         }
+        /* Iframe'in panelle uyum sağlaması için genel stil */
         #music-panel iframe {
             border-radius: 8px;
             display: block;
@@ -366,9 +367,9 @@
             <span id="music-title">Odak Müzik</span>
             <button id="close-music-btn">✖</button>
         </div>
-        <iframe src="<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6zCID88oNjNv9zx6puDHKj?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>" 
-                width="100%" 
-                height="300" 
+        <iframe data-testid="embed-iframe" 
+                style="border-radius:12px; width:100%; height:300px;" 
+                src="https://open.spotify.com/embed/playlist/6zCID88oNjNv9zx6puDHKj?utm_source=generator" 
                 frameBorder="0" 
                 allowfullscreen="" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -546,7 +547,7 @@
                 } else if (shortBreakBtn.classList.contains('active')) {
                     currentDuration = SHORT_BREAK_DURATION;
                 } else if (longBreakBtn.classList.contains('active')) {
-                    currentDuration = LONG_BREAKURATION;
+                    currentDuration = LONG_BREAK_DURATION;
                 }
                 timeRemaining = currentDuration;
                 updateTimerDisplay();
@@ -773,7 +774,7 @@
         // Başlık için düzenlenebilirlik desteği
         mainTitle.addEventListener('blur', () => {
             if (mainTitle.textContent.trim() === '') {
-                mainTitle.textContent = 'YKS ZAMANI'; // Boş bırakılırsa varsayılana dön
+                mainTitle.textContent = TRANSLATIONS[currentLanguage].main_title; // Boş bırakılırsa varsayılana dön
             }
         });
 
@@ -787,7 +788,13 @@
         mainTitle.setAttribute('data-initial', 'true');
         translateUI('tr');
         updateTimerDisplay();
-        changeBackground(BACKGROUND_OPTIONS[0].file);
+        // Varsayılan olarak ilk arkaplanı seç
+        const initialBgButton = document.querySelector('.bg-options button');
+        if (initialBgButton) {
+            changeBackground(BACKGROUND_OPTIONS[0].file, initialBgButton);
+        } else {
+            changeBackground(BACKGROUND_OPTIONS[0].file); // Buton oluşturulmadıysa sadece arkaplanı ayarla
+        }
     </script>
 </body>
 </html>
