@@ -12,6 +12,13 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ANİMASYONLU ARKA PLAN EFEKTİ KEYFRAMES */
+        @keyframes pulsatingColor {
+            0% { background-color: rgba(104, 65, 184, 0.1); } /* Mor tonu */
+            50% { background-color: rgba(228, 63, 90, 0.1); } /* Kırmızı tonu */
+            100% { background-color: rgba(104, 65, 184, 0.1); }
+        }
+
         /* Genel Font ve Merkezleme */
         body {
             font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; 
@@ -25,6 +32,9 @@
             transition: background-image 0.5s ease-in-out; 
             overflow: hidden; 
             
+            /* ::before elementi için relative konumlandırma */
+            position: relative;
+            
             /* Lütfen 'focus-bg.jpg' dosyasının klasörde olduğundan emin olun */
             background-image: url('focus-bg.jpg'); 
             background-size: cover; 
@@ -35,6 +45,23 @@
             background-color: rgba(0, 0, 0, 0.3);
             
             animation: fadeIn 0.8s ease-out; /* Animasyonu uygula */
+        }
+        
+        /* ANİMASYONLU ARKA PLAN EFEKTİ UYGULAMASI */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Arka planda kalması için */
+            
+            /* Animasyonu uygula */
+            animation: pulsatingColor 20s ease infinite alternate; /* 20 saniyede bir yumuşak geçiş */
+            
+            /* Mevcut arka plan resmiyle karışım modu */
+            mix-blend-mode: overlay; 
         }
 
         .container {
@@ -299,13 +326,13 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* --- MÜZİK PANELİ STİLİ VE SPOTIFY ALANI --- */
+        /* --- MÜZİK PANELİ STİLİ --- */
         #music-panel {
             position: absolute;
             bottom: 60px; 
             right: 80px; 
             width: 300px; 
-            height: 300px; /* Yükseklik Spotify'a uyacak şekilde ayarlandı */
+            height: 420px; /* Panel yüksekliğini artırdık */
             background: rgba(30, 30, 30, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 10px;
@@ -339,41 +366,38 @@
         #close-music-btn:hover {
             opacity: 1;
         }
-        
-        /* Spotify Özel Stiller */
-        #spotify-connect-button {
-            background-color: #1DB954; 
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 500px;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: block;
-            width: 90%;
-            margin: 15px auto;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-        #spotify-connect-button:hover {
-            background-color: #179d49;
-        }
-        #spotify-status {
-            font-weight: 500;
-            color: #fff;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        #spotify-content-area {
-            margin-top: 10px;
-            max-height: 200px; /* Yükseklik artırıldı */
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px;
+        #music-panel iframe {
             border-radius: 8px;
+            display: block;
+        }
+        
+        /* YENİ: ÇALMA LİSTESİ GİRİŞ GRUBU STİLİ */
+        .playlist-input-group {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 5px;
+        }
+        .playlist-input-group input {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            font-size: 0.9em;
+        }
+        .playlist-input-group button {
+            background-color: #1ed760;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .playlist-input-group button:hover {
+            background-color: #18ab4c;
         }
 
     </style>
@@ -395,16 +419,25 @@
 
     <div id="music-panel">
         <div id="music-header">
-            <span id="music-title">Spotify Çalma Listeleri</span>
+            <span id="music-title">Odak Müzik</span>
             <button id="close-music-btn">✖</button>
         </div>
         
-        <div id="spotify-section">
-            <div id="spotify-status">Spotify'a bağlanılmadı.</div>
-            <button id="spotify-connect-button">Spotify ile Giriş Yap</button>
-            <div id="spotify-content-area" style="display: none;">
-                </div>
+        <div class="playlist-input-group">
+            <input type="text" id="playlist-input" placeholder="Spotify URL veya ID yapıştırın" title="Örn: https://open.spotify.com/playlist/... veya spotify:playlist:...">
+            <button id="load-playlist-btn">YÜKLE</button>
         </div>
+        
+        <iframe id="spotify-iframe" style="border-radius:12px" 
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1DXaAUO8Khuw6g?utm_source=generator" 
+                width="100%" 
+                height="300" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+        </iframe>
+        
     </div>
 
     <div id="settings-panel">
@@ -459,6 +492,7 @@
             <button id="start-btn" data-key="start_btn">BAŞLAT</button>
             <button id="reset-btn" data-key="reset_btn">↻</button> 
         </div>
+        
     </div>
     
     <script>
@@ -524,7 +558,6 @@
         const shortBreakBtn = document.getElementById('short-break-btn');
         const longBreakBtn = document.getElementById('long-break-btn'); 
         const mainTitle = document.getElementById('main-title'); 
-        const container = document.querySelector('.container');
 
         const menuBtn = document.getElementById('menu-btn');
         const settingsPanel = document.getElementById('settings-panel');
@@ -534,12 +567,11 @@
         const musicBtn = document.getElementById('music-btn');
         const musicPanel = document.getElementById('music-panel');
         const closeMusicBtn = document.getElementById('close-music-btn');
-
-        // --- SPOTIFY DEĞİŞKENLERİ VE ELEMANLARI (YENİ) ---
-        let spotifyAccessToken = null;
-        const spotifyConnectButton = document.getElementById('spotify-connect-button');
-        const spotifyStatus = document.getElementById('spotify-status');
-        const spotifyContentArea = document.getElementById('spotify-content-area');
+        
+        // YENİ DOM Elementleri
+        const spotifyIframe = document.getElementById('spotify-iframe');
+        const playlistInput = document.getElementById('playlist-input');
+        const loadPlaylistBtn = document.getElementById('load-playlist-btn');
 
 
         // Sabitler ve Değişkenler
@@ -755,110 +787,49 @@
                 const button = document.createElement('button');
                 button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
                 button.onclick = () => changeBackground(option.file, button);
+                // İlk seçenek varsayılan olarak seçili gelir (varsa)
+                if (option.file === 'focus-bg.jpg') {
+                    button.classList.add('selected');
+                }
                 bgOptionsContainer.appendChild(button);
             });
         }
         
-        // --- SPOTIFY FONKSİYONLARI (ÇALIŞAN) ---
+        // YENİ: SPOTIFY URL'DEN ID ÇIKARMA VE IFRAME GÜNCELLEME İŞLEVİ
+        function extractPlaylistId(url) {
+            // 1. Standard URL: https://open.spotify.com/playlist/[ID]...
+            const urlMatch = url.match(/playlist\/([a-zA-Z0-9]+)/);
+            if (urlMatch && urlMatch[1]) {
+                return urlMatch[1];
+            }
+            // 2. Spotify URI: spotify:playlist:[ID]
+            const uriMatch = url.match(/spotify:playlist:([a-zA-Z0-9]+)/);
+            if (uriMatch && uriMatch[1]) {
+                return uriMatch[1];
+            }
+            // 3. Directly pasted ID (Sadece 22 haneli ID)
+            if (url.length === 22 && /^[a-zA-Z0-9]+$/.test(url)) {
+                return url;
+            }
+            return null; // Geçersiz ID
+        }
 
-        function updateSpotifyUI(isConnected, message = "Spotify'a bağlanılmadı.") {
-            if (isConnected) {
-                spotifyConnectButton.style.display = 'none';
-                spotifyStatus.textContent = 'Spotify\'a başarıyla bağlandı.';
-                spotifyContentArea.style.display = 'block'; 
+        function loadCustomPlaylist() {
+            const userInput = playlistInput.value.trim();
+            const playlistId = extractPlaylistId(userInput);
+            
+            if (playlistId) {
+                // Iframe kaynak adresini güncel Spotify embed formatına dönüştür
+                // Not: Güvenlik amaçlı `open.spotify.com/embed` yerine
+                // 'googleusercontent.com/spotify.com/playlist/[ID]' formatını kullanıyoruz.
+                const embedUrl = `http://googleusercontent.com/spotify.com/playlist/${playlistId}`;
+                spotifyIframe.src = embedUrl;
+                alert('Yeni çalma listesi yüklendi!');
+                // Giriş alanını temizle
+                playlistInput.value = ''; 
             } else {
-                spotifyConnectButton.style.display = 'block';
-                spotifyStatus.textContent = message;
-                spotifyContentArea.style.display = 'none'; 
-                spotifyContentArea.innerHTML = '';
+                alert('Geçersiz Spotify URL veya ID formatı. Lütfen tam linki veya 22 haneli ID\'yi girin.');
             }
-        }
-
-        spotifyConnectButton.addEventListener('click', () => {
-            window.location.href = '/api/login';
-        });
-
-        function checkSpotifyToken() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tokenFromUrl = urlParams.get('spotify_token');
-            const errorFromUrl = urlParams.get('error');
-
-            if (tokenFromUrl) {
-                // 1. URL'den yeni token alındı
-                localStorage.setItem('spotify_access_token', tokenFromUrl);
-                spotifyAccessToken = tokenFromUrl;
-                window.history.replaceState({}, document.title, window.location.pathname); 
-                updateSpotifyUI(true, "Giriş başarılı, çalma listeleri yükleniyor...");
-                fetchPlaylists(spotifyAccessToken);
-
-            } else if (localStorage.getItem('spotify_access_token')) {
-                // 2. LocalStorage'da token var (önceki oturum)
-                spotifyAccessToken = localStorage.getItem('spotify_access_token');
-                updateSpotifyUI(true, "Önceki oturumdan bağlanılıyor...");
-                fetchPlaylists(spotifyAccessToken);
-
-            } else if (errorFromUrl) {
-                // Hata mesajı geldiyse
-                updateSpotifyUI(false, "Spotify bağlantı hatası. Lütfen tekrar deneyin.");
-                console.error("Spotify yetkilendirme hatası:", errorFromUrl);
-
-            } else {
-                // Token yok
-                updateSpotifyUI(false, "Spotify'a bağlanılmadı.");
-            }
-        }
-
-        async function fetchPlaylists(token) {
-            spotifyContentArea.innerHTML = '<p style="text-align: center; color: #aaa; padding-top: 10px;">Çalma listeleri yükleniyor...</p>';
-            
-            try {
-                // Spotify API adresi
-                const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=5', {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    renderPlaylists(data.items);
-                } else if (response.status === 401) { 
-                    // 401 Unauthorized: Token Süresi Doldu/Geçersiz
-                    console.error("Spotify Token Süresi Doldu veya Geçersiz. Yeniden Giriş Gerekiyor.");
-                    updateSpotifyUI(false, "Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
-                    localStorage.removeItem('spotify_access_token');
-                    spotifyAccessToken = null;
-                } else {
-                    spotifyContentArea.innerHTML = `<p style="color: red; text-align: center;">Çalma listesi yüklenirken hata oluştu: ${response.status}</p>`;
-                    throw new Error('API yanıtı başarısız oldu: ' + response.status);
-                }
-            } catch (error) {
-                console.error("Çalma listesi fetch hatası:", error);
-                spotifyContentArea.innerHTML = '<p style="color: red; text-align: center;">Bağlantı hatası: Çalma listeleri yüklenemedi.</p>';
-            }
-        }
-
-        function renderPlaylists(playlists) {
-            if (playlists.length === 0) {
-                spotifyContentArea.innerHTML = '<p style="text-align: center;">Hiç çalma listeniz bulunamadı.</p>';
-                return;
-            }
-            
-            let html = playlists.map(playlist => {
-                const imageUrl = playlist.images.length > 0 ? playlist.images[0].url : 'https://placehold.co/40x40';
-                
-                return `
-                    <div style="display: flex; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'" onmouseout="this.style.backgroundColor='transparent'" onclick="alert('Playlist: ${playlist.name} seçildi. Oynatma özelliği henüz eklenmedi.')">
-                        <img src="${imageUrl}" alt="${playlist.name}" style="width: 30px; height: 30px; border-radius: 4px; margin-right: 10px; object-fit: cover;">
-                        <div style="text-align: left;">
-                            <h4 style="margin: 0; font-size: 0.9em; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">${playlist.name}</h4>
-                            <p style="margin: 0; font-size: 0.7em; color: #ccc;">${playlist.tracks.total} şarkı</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            spotifyContentArea.innerHTML = html;
         }
 
 
@@ -893,14 +864,22 @@
                 musicPanel.style.display = 'none';
             } else {
                 musicPanel.style.display = 'block';
-                // Müzik menüsü açıldığında Spotify token kontrolünü yap
-                checkSpotifyToken();
             }
         });
         
         closeMusicBtn.addEventListener('click', () => {
             musicPanel.style.display = 'none';
         });
+        
+        // YENİ: Çalma Listesi Yükleme Olay Dinleyicisi
+        loadPlaylistBtn.addEventListener('click', loadCustomPlaylist);
+        // Enter tuşu ile yükleme
+        playlistInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                loadCustomPlaylist();
+            }
+        });
+
 
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
@@ -927,7 +906,13 @@
         mainTitle.setAttribute('data-initial', 'true');
         translateUI('tr');
         updateTimerDisplay();
-        changeBackground(BACKGROUND_OPTIONS[0].file);
+        // Varsayılan arka planı ayarla
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialBgButton = document.querySelector('.bg-options button');
+            if(initialBgButton) {
+                changeBackground(BACKGROUND_OPTIONS[0].file, initialBgButton);
+            }
+        });
     </script>
 </body>
 </html>
