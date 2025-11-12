@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="doc-title">YKS Zamanlayıcısı</title>
+    
+    <style>
+	/* Yeni: Sayfa Geçiş Animasyonu CSS'i */
+	@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+   to { opacity: 1; transform: translateY(0); }
+	}
+
+	body {
+    /* ... mevcut body stilleri ... */
+    animation: fadeIn 0.8s ease-out; /* Animasyonu uygula */
+	}        
+	/* Genel Font ve Merkezleme */
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            width: 100vw; 
+            margin: 0;
+            color: #ffffff; 
+            transition: background-image 0.5s ease-in-out; 
+            overflow: hidden; 
+            
+            /* Lütfen 'focus-bg.jpg' dosyasının klasörde olduğundan emin olun */
+            background-image: url('focus-bg.jpg'); 
+            background-size: cover; 
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            background-color: transparent; 
+            padding: 50px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* --- BAŞLIK VE SÖZLER --- */
+
+        .header-top {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none; 
+        }
+        
+        #app-logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            pointer-events: all;
+        }
+
+        #quote {
+            font-size: 1.1em;
+            font-weight: 400;
+            color: #ffffff;
+            text-align: right;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            pointer-events: all;
+        }
+
+        /* Düzenlenebilir Başlık Stili */
+        #main-title {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            color: #ffffff;
+            font-weight: 400;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            cursor: pointer; /* Düzenlenebilir olduğunu göstermek için */
+        }
+        
+        /* --- ZAMANLAYICI MODLARI --- */
+        .modes {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .modes button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #ffffff;
+            padding: 8px 15px;
+            margin: 0 4px;
+            border-radius: 20px; 
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .modes button.active {
+            background-color: rgba(255, 255, 255, 0.4); 
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); 
+        }
+        .modes button:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+
+        /* --- ZAMANLAYICI EKRANI --- */
+        .timer {
+            font-size: 9em; 
+            font-weight: 700; 
+            margin: 0;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Süre Input Stili */
+        .time-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1em;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        .time-input::placeholder {
+            color: #ccc;
+        }
+
+
+        /* --- KONTROL BUTONLARI --- */
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #start-btn, #pause-btn {
+            background-color: rgba(255, 255, 255, 0.25); 
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px; 
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            min-width: 150px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        #pause-btn {
+             background-color: #e43f5a; 
+        }
+
+        #start-btn:hover, #pause-btn:hover {
+            opacity: 0.9;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Sıfırla Butonu (Yenile Simgesi) */
+        #reset-btn {
+            background: none;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 2.2em; 
+            padding: 5px;
+            transition: color 0.2s, transform 0.2s;
+            margin-left: 10px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        #reset-btn:hover {
+            color: #d1b4e0;
+            transform: rotate(90deg);
+        }
+        
+        /* --- AYARLAR VE TAM EKRAN TUŞLARI --- */
+
+        /* Sağ Alt Köşe Grubu */
+        .bottom-right-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .bottom-right-controls button, .bottom-right-controls a {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1.8em;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            padding: 0;
+            line-height: 1;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+        }
+        
+        .bottom-right-controls button:hover, .bottom-right-controls a:hover {
+            opacity: 1;
+        }
+        
+        /* Ayarlar Paneli */
+        #settings-panel {
+            position: absolute;
+            bottom: 60px; 
+            right: 20px;
+            width: 300px; 
+            background: rgba(30, 30, 30, 0.9); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none; 
+            text-align: left; 
+        }
+        .setting-group {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .setting-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .setting-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d1b4e0;
+        }
+        .lang-options button, .bg-options button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            margin-right: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9em;
+        }
+        .lang-options button.selected, .bg-options button.selected {
+            background: #e43f5a;
+        }
+        .lang-options button:hover, .bg-options button:not(.selected):hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Süre Inputları için özel stil */
+        .time-setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .time-setting-item label {
+            width: 45%;
+            margin-bottom: 0;
+            font-size: 0.9em;
+            font-weight: 400;
+            color: #ffffff;
+        }
+        .time-setting-item input {
+            width: 50px;
+            text-align: right;
+            padding: 5px;
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="header-top">
+        <div id="app-logo">memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span></div>
+        <div id="quote">"Sometimes you win, <br> sometimes you learn"</div>
+    </div>
+    
+    <div class="bottom-right-controls">
+        <a id="download-btn" href="download.html" title="Uygulamayı İndir">⬇️</a>
+        <button id="fullscreen-btn" title="Tam Ekran Yap">⛶</button>
+        <button id="menu-btn" title="Ayarlar">⚙️</button>
+    </div>
+
+    <div id="settings-panel">
+        <h3><span id="settings-title">Ayarlar</span></h3>
+        
+        <div class="setting-group">
+            <label id="lang-label">Dil Seçimi</label>
+            <div class="lang-options">
+                <button id="lang-tr-btn" onclick="setLanguage('tr')" class="selected">Türkçe</button>
+                <button id="lang-en-btn" onclick="setLanguage('en')">English</button>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label>Süre Ayarları (Dakika)</label>
+            <div style="display: flex; flex-direction: column;">
+                 <div class="time-setting-item">
+                     <label>Çalışma Süresi:</label>
+                     <input type="number" id="pomodoro-input" class="time-input" placeholder="25" min="1">
+                 </div>
+                 <div class="time-setting-item">
+                     <label>Kısa Mola Süresi:</label>
+                     <input type="number" id="short-break-input" class="time-input" placeholder="5" min="1">
+                 </div>
+                 <div class="time-setting-item">
+                     <label>Uzun Mola Süresi:</label>
+                     <input type="number" id="long-break-input" class="time-input" placeholder="15" min="1">
+                 </div>
+                 <button onclick="applyNewDurations()" style="margin-top: 10px; background: #6841b8; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">Uygula</button>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label id="bg-label">Arka Plan Seçimi</label>
+            <div class="bg-options" id="bg-options-container">
+                </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 id="main-title" contenteditable="true">YKS ZAMANI</h1> 
+        
+        <div class="modes">
+            <button id="pomodoro-btn" data-key="pomodoro_mode" class="active">Çalışma</button>
+            <button id="short-break-btn" data-key="short_break_mode">Kısa Mola</button>
+            <button id="long-break-btn" data-key="long_break_mode">Uzun Mola</button>
+        </div>
+        
+        <div id="timer" class="timer">25:00</div>
+
+        <div class="controls">
+            <button id="start-btn" data-key="start_btn">BAŞLAT</button>
+            <button id="reset-btn" data-key="reset_btn">↻</button> 
+        </div>
+        
+    </div>
+    
+    <script>
+        // --- DİL SÖZLÜĞÜ ---
+        const TRANSLATIONS = {
+            'tr': {
+                'doc_title': 'YKS Zamanlayıcısı', 
+                'main_title': 'YKS ZAMANI', 
+                'settings_title': 'Ayarlar',
+                'lang_label': 'Dil Seçimi',
+                'bg_label': 'Arka Plan Seçimi',
+                'pomodoro_mode': 'Çalışma',
+                'short_break_mode': 'Kısa Mola',
+                'long_break_mode': 'Uzun Mola',
+                'start_btn': 'BAŞLAT',
+                'pause_btn': 'DURDUR',
+                'reset_btn': 'SIFIRLA', 
+                'continue_btn': 'DEVAM ET',
+                'alert_message': 'Süre bitti! Yeni moda geçiliyor.',
+                'bg_focus': 'Odak Yolu',
+                'bg_rain': 'Yağmur',
+                'bg_forest': 'Orman',
+                'bg_black': 'Siyah'
+            },
+            'en': {
+                'doc_title': 'YKS Timer',
+                'main_title': 'YKS TIME',
+                'settings_title': 'Settings',
+                'lang_label': 'Language Selection',
+                'bg_label': 'Background Selection',
+                'pomodoro_mode': 'Study', 
+                'short_break_mode': 'Short Break',
+                'long_break_mode': 'Long Break',
+                'start_btn': 'START',
+                'pause_btn': 'PAUSE',
+                'reset_btn': 'RESET',
+                'continue_btn': 'RESUME',
+                'alert_message': 'Time\'s up! Switching mode.',
+                'bg_focus': 'Focus Path',
+                'bg_rain': 'Rain',
+                'bg_forest': 'Forest',
+                'bg_black': 'Black'
+            }
+        };
+
+        // --- GÖRSEL VERİLERİ ---
+        const BACKGROUND_OPTIONS = [
+            { nameKey: 'bg_focus', file: 'focus-bg.jpg'},
+            { nameKey: 'bg_rain', file: 'rain.jpg'},
+            { nameKey: 'bg_forest', file: 'forest.jpg'},
+            { nameKey: 'bg_black', file: 'pure-black'}
+        ];
+
+        // --- DOM Elementleri ---
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.createElement('button'); 
+        pauseBtn.id = 'pause-btn';
+        pauseBtn.setAttribute('data-key', 'pause_btn');
+
+        const resetBtn = document.getElementById('reset-btn');
+        const pomodoroBtn = document.getElementById('pomodoro-btn');
+        const shortBreakBtn = document.getElementById('short-break-btn');
+        const longBreakBtn = document.getElementById('long-break-btn'); 
+        const mainTitle = document.getElementById('main-title'); 
+
+        const menuBtn = document.getElementById('menu-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const bgOptionsContainer = document.getElementById('bg-options-container');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+
+        // Sabitler ve Değişkenler
+        let POMODORO_DURATION = 25 * 60;
+        let SHORT_BREAK_DURATION = 5 * 60; 
+        let LONG_BREAK_DURATION = 15 * 60; 
+        let currentLanguage = 'tr'; 
+
+        let currentDuration = POMODORO_DURATION;
+        let isRunning = false;
+        let interval;
+        let timeRemaining = currentDuration;
+        
+        // Input Elementleri
+        const pomodoroInput = document.getElementById('pomodoro-input');
+        const shortBreakInput = document.getElementById('short-break-input');
+        const longBreakInput = document.getElementById('long-break-input');
+
+
+        // --- SÜRE AYARLAMA İŞLEVİ ---
+        function applyNewDurations() {
+            // Sadece sayısal ve pozitif değerleri kabul et
+            const newPomodoro = Math.max(1, parseInt(pomodoroInput.value) || 25);
+            const newShort = Math.max(1, parseInt(shortBreakInput.value) || 5);
+            const newLong = Math.max(1, parseInt(longBreakInput.value) || 15);
+            
+            // Inputları temizle ve varsayılanları kaydet
+            pomodoroInput.value = newPomodoro;
+            shortBreakInput.value = newShort;
+            longBreakInput.value = newLong;
+
+            POMODORO_DURATION = newPomodoro * 60;
+            SHORT_BREAK_DURATION = newShort * 60;
+            LONG_BREAK_DURATION = newLong * 60;
+
+            // Eğer zamanlayıcı aktif değilse, mevcut modu yeni süreyle güncelle
+            if (!isRunning) {
+                if (pomodoroBtn.classList.contains('active')) {
+                    currentDuration = POMODORO_DURATION;
+                } else if (shortBreakBtn.classList.contains('active')) {
+                    currentDuration = SHORT_BREAK_DURATION;
+                } else if (longBreakBtn.classList.contains('active')) {
+                    currentDuration = LONG_BREAK_DURATION;
+                }
+                timeRemaining = currentDuration;
+                updateTimerDisplay();
+            }
+            alert('Yeni süreler başarıyla uygulandı!');
+        }
+
+
+        // --- DİL VE ÇEVİRİ İŞLEVLERİ ---
+        function translateUI(lang) {
+            const texts = TRANSLATIONS[lang];
+            
+            document.getElementById('doc-title').textContent = texts.doc_title;
+            
+            // Başlığı sadece ilk yüklemede veya dil değiştiğinde günceller
+            if (mainTitle.getAttribute('data-initial') === 'true') {
+                 mainTitle.textContent = texts.main_title;
+                 mainTitle.removeAttribute('data-initial');
+            } else if (currentLanguage !== lang) {
+                 // Dil değiştiğinde, sadece varsayılan başlık kullanılıyorsa çevir
+                 const currentDefault = currentLanguage === 'tr' ? 'YKS ZAMANI' : 'YKS TIME';
+                 if (mainTitle.textContent.trim() === currentDefault) {
+                     mainTitle.textContent = texts.main_title;
+                 }
+            }
+            
+            document.getElementById('settings-title').textContent = texts.settings_title;
+            document.getElementById('lang-label').textContent = texts.lang_label;
+            document.getElementById('bg-label').textContent = texts.bg_label;
+
+            document.querySelectorAll('[data-key]').forEach(btn => {
+                const key = btn.getAttribute('data-key');
+                if (key !== 'reset_btn' && key !== 'pause_btn') {
+                     btn.textContent = texts[key];
+                }
+            });
+            
+            if (isRunning) {
+                 pauseBtn.textContent = texts.pause_btn;
+            } else if (startBtn.parentElement && startBtn.textContent !== texts.start_btn) {
+                 startBtn.textContent = texts.continue_btn;
+            } else {
+                 startBtn.textContent = texts.start_btn;
+            }
+            
+            document.getElementById('lang-tr-btn').classList.remove('selected');
+            document.getElementById('lang-en-btn').classList.remove('selected');
+            document.getElementById(`lang-${lang}-btn`).classList.add('selected');
+
+            currentLanguage = lang;
+            renderBackgroundOptions();
+        }
+        
+        // --- ZAMANLAYICI İŞLEVLERİ ---
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const paddedMinutes = String(minutes).padStart(2, '0');
+            const paddedSeconds = String(remainingSeconds).padStart(2, '0');
+            return `${paddedMinutes}:${paddedSeconds}`;
+        }
+        function updateTimerDisplay() { 
+            timerDisplay.textContent = formatTime(timeRemaining);
+        }
+        function startTimer() { 
+            if (isRunning) return; 
+
+            isRunning = true;
+            if (!pauseBtn.parentElement) {
+                 startBtn.parentElement.replaceChild(pauseBtn, startBtn); 
+            }
+            pauseBtn.textContent = TRANSLATIONS[currentLanguage].pause_btn;
+
+            interval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    isRunning = false;
+                    
+                    if (currentDuration === POMODORO_DURATION) {
+                        switchMode(SHORT_BREAK_DURATION, shortBreakBtn);
+                        startTimer();
+                    } else if (currentDuration === SHORT_BREAK_DURATION) {
+                        switchMode(POMODORO_DURATION, pomodoroBtn); 
+                    } else if (currentDuration === LONG_BREAK_DURATION) {
+                         switchMode(POMODORO_DURATION, pomodoroBtn);
+                    }
+                    alert(TRANSLATIONS[currentLanguage].alert_message);
+                }
+            }, 1000);
+        }
+        function pauseTimer() { 
+            if (!isRunning) return;
+            isRunning = false;
+            clearInterval(interval);
+            
+            if(pauseBtn.parentElement) {
+                pauseBtn.parentElement.replaceChild(startBtn, pauseBtn); 
+            }
+            startBtn.textContent = TRANSLATIONS[currentLanguage].continue_btn;
+        }
+        function resetTimer() { 
+            pauseTimer(); 
+            if(pauseBtn.parentElement) {
+                pauseBtn.parentElement.replaceChild(startBtn, pauseBtn); 
+            }
+            startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
+            
+            // Mevcut moda göre süreyi sıfırla
+            if(pomodoroBtn.classList.contains('active')) {
+                currentDuration = POMODORO_DURATION;
+            } else if (shortBreakBtn.classList.contains('active')) {
+                 currentDuration = SHORT_BREAK_DURATION;
+            } else if (longBreakBtn.classList.contains('active')) {
+                 currentDuration = LONG_BREAK_DURATION;
+            }
+
+            timeRemaining = currentDuration;
+            updateTimerDisplay();
+        }
+        function switchMode(duration, btn) { 
+            resetTimer(); 
+            document.querySelector('.modes button.active').classList.remove('active');
+            btn.classList.add('active');
+            currentDuration = duration;
+            timeRemaining = currentDuration;
+            
+            startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
+            updateTimerDisplay();
+        }
+        
+        // --- DİĞER İŞLEVLER ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error("Tam ekran etkinleştirilemiyor:", err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        function changeBackground(fileName, buttonElement) {
+            const body = document.body;
+            
+            // Arka planı tamamen siyah yap
+            if (fileName === 'pure-black') {
+                body.style.backgroundImage = 'none';
+                body.style.backgroundColor = '#000000';
+                body.style.backgroundBlendMode = 'none';
+            } else {
+                // Resmi kullan
+                body.style.backgroundImage = `url('${fileName}')`;
+                body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                body.style.backgroundBlendMode = 'overlay';
+            }
+
+            // Aktif butonu işaretle
+            document.querySelectorAll('.bg-options button').forEach(btn => btn.classList.remove('selected'));
+            if (buttonElement) {
+                 buttonElement.classList.add('selected');
+            }
+        }
+
+        function renderBackgroundOptions() {
+            bgOptionsContainer.innerHTML = '';
+            BACKGROUND_OPTIONS.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
+                button.onclick = () => changeBackground(option.file, button);
+                bgOptionsContainer.appendChild(button);
+            });
+        }
+
+
+        // --- Olay Dinleyicileri ---
+        
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        menuBtn.addEventListener('click', () => {
+            if (settingsPanel.style.display === 'block') {
+                settingsPanel.style.display = 'none';
+            } else {
+                // Ayarlar açılırken inputları mevcut değerlerle doldur
+                pomodoroInput.value = POMODORO_DURATION / 60;
+                shortBreakInput.value = SHORT_BREAK_DURATION / 60;
+                longBreakInput.value = LONG_BREAK_DURATION / 60;
+                
+                renderBackgroundOptions();
+                settingsPanel.style.display = 'block';
+            }
+        });
+
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        pomodoroBtn.addEventListener('click', () => { switchMode(POMODORO_DURATION, pomodoroBtn); });
+        shortBreakBtn.addEventListener('click', () => { switchMode(SHORT_BREAK_DURATION, shortBreakBtn); });
+        longBreakBtn.addEventListener('click', () => { switchMode(LONG_BREAK_DURATION, longBreakBtn); });
+
+        // Başlık için düzenlenebilirlik desteği
+        mainTitle.addEventListener('blur', () => {
+            if (mainTitle.textContent.trim() === '') {
+                mainTitle.textContent = 'YKS ZAMANI'; // Boş bırakılırsa varsayılana dön
+            }
+        });
+
+
+        window.setLanguage = translateUI;
+        window.applyNewDurations = applyNewDurations; // HTML'den çağrılmak için
+        window.changeBackground = changeBackground;
+
+
+        // Başlangıç ayarları
+        mainTitle.setAttribute('data-initial', 'true');
+        translateUI('tr');
+        updateTimerDisplay();
+        changeBackground(BACKGROUND_OPTIONS[0].file);
+    </script>
+</body>
+</html>

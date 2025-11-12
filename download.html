@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memodoro İndir</title>
+    
+    <style>
+        /* Yeni: Sayfa Geçiş Animasyonu CSS'i */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            margin: 0;
+            color: #ffffff; 
+            
+            /* index.html ile aynı görsel temayı kullanır */
+            background-color: #1e1e2f; 
+            background-image: url('focus-bg.jpg'); 
+            background-size: cover;
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.3);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            /* Geçiş animasyonunu uygula */
+            animation: fadeIn 0.8s ease-out; 
+        }
+
+        .download-container {
+            background-color: rgba(30, 30, 30, 0.85); 
+            padding: 60px 80px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #d1b4e0;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            color: #ccc;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .download-buttons a {
+            text-decoration: none;
+            background-color: #e43f5a; /* Kırmızımsı ton */
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px; 
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .download-buttons a.mac-btn {
+            background-color: #6841b8; /* Mavi/Mor ton */
+        }
+
+        .download-buttons a:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Ana Sayfa Simgesi Stili */
+        #back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 2.2em; /* İkonu büyüt */
+            opacity: 0.8;
+            transition: opacity 0.2s, transform 0.2s;
+            padding: 5px; 
+            border-radius: 5px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        #back-link:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <a id="back-link" href="index.html" title="Ana Sayfa (Zamanlayıcı)">🏠</a>
+
+    <div class="download-container">
+        <h1>Memodoro Masaüstü Uygulamasını İndir</h1>
+        <p>Windows ve macOS için bağımsız, reklamsız odaklanma ve çalışma zamanlayıcısı.</p>
+        
+        <div class="download-buttons">
+            <a href="[WINDOWS_INDIRME_LINKI]" target="_blank">
+                <span style="font-size: 1.5em; margin-right: 10px;">🪟</span> Windows (.exe)
+            </a>
+            
+            <a href="[MAC_INDIRME_LINKI]" target="_blank" class="mac-btn">
+                <span style="font-size: 1.5em; margin-right: 10px;"></span> macOS (.dmg)
+            </a>
+        </div>
+        <p style="margin-top: 30px; font-size: 0.9em; color: #888;">*Uygulama, Electron ile paketlenmiştir ve verilerinizi yerel olarak kaydeder.</p>
+    </div>
+    
+</body>
+</html>
