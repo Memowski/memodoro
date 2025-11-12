@@ -306,7 +306,7 @@
         /* YENİ: Arka Plan Seçeneği Kapsayıcı Stili */
         .bg-options {
             display: flex;
-            flex-wrap: wrap; /* Butonların yan yana gelmesini sağlar */
+            flex-wrap: wrap; 
             gap: 8px;
         }
         
@@ -316,7 +316,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 60px; /* Önizleme resmi için yer */
+            width: 60px; 
             height: 90px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
@@ -330,7 +330,7 @@
             text-align: center;
         }
         .bg-options button.selected {
-            border: 2px solid #e43f5a; /* Kırmızı çerçeve */
+            border: 2px solid #e43f5a; 
             background: rgba(255, 255, 255, 0.2);
             padding: 4px;
         }
@@ -737,13 +737,33 @@
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
 
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            const paddedMinutes = String(minutes).padStart(2, '0');
-            const paddedSeconds = String(remainingSeconds).padStart(2, '0');
-            return `${paddedMinutes}:${paddedSeconds}`;
+        function formatTime(totalSeconds) {
+            
+            // Eğer süre 1 saatten (3600 saniyeden) büyükse, HH:MM:SS formatını kullan
+            if (totalSeconds >= 3600) {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                
+                const paddedHours = String(hours).padStart(2, '0');
+                const paddedMinutes = String(minutes).padStart(2, '0');
+                const paddedSeconds = String(seconds).padStart(2, '0');
+                
+                // Örnek: 01:30:00
+                return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+            } else {
+                // Eğer süre 1 saatten küçükse, MM:SS formatını kullan
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                
+                const paddedMinutes = String(minutes).padStart(2, '0');
+                const paddedSeconds = String(seconds).padStart(2, '0');
+                
+                // Örnek: 25:00
+                return `${paddedMinutes}:${paddedSeconds}`;
+            }
         }
+
         function updateTimerDisplay() { 
             timerDisplay.textContent = formatTime(timeRemaining);
         }
@@ -853,7 +873,7 @@
             }
         }
 
-        // YENİ: Önizleme butonlarını oluşturan fonksiyon
+        // Önizleme butonlarını oluşturan fonksiyon
         function renderBackgroundOptions() {
             bgOptionsContainer.innerHTML = '';
             BACKGROUND_OPTIONS.forEach(option => {
@@ -926,7 +946,7 @@
                 spotifyIframe.style.display = 'block';
 
                 if (!defaultId) {
-                    // YENİ UYARI MESAJI
+                    // GÜNCELLENMİŞ UYARI MESAJI
                     alert('Yeni Spotify çalma listesi yüklendi. Oynatmayı başlatmak için oynatıcının üzerindeki yeşil Oynat butonuna **manuel olarak** tıklamanız gerekebilir.');
                 }
                 sourceInput.value = ''; 
@@ -949,7 +969,7 @@
                 
                 html5AudioPlayer.style.display = 'block';
 
-                // YENİ UYARI MESAJI
+                // GÜNCELLENMİŞ UYARI MESAJI
                 alert('Yeni ses dosyası yüklendi. Tarayıcı kısıtlamaları nedeniyle otomatik başlamazsa, oynatıcıdan manuel başlatın.');
                 sourceInput.value = '';
 
