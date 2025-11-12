@@ -1,7 +1,9 @@
 {
   "functions": {
     "api/**/*.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs18.x" 
+      // VEYA daha yeni sürüm olan "nodejs20.x" de kullanabilirsiniz.
+      // ÖNEMLİ: Mutlaka ÇİFT TIRNAK içinde ve tam olarak bu formatta olmalı.
     }
   },
   "rewrites": [
