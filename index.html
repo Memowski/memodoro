@@ -285,7 +285,7 @@
             font-weight: 500;
             color: #d1b4e0;
         }
-        .lang-options button, .bg-options button {
+        .lang-options button {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
@@ -296,11 +296,57 @@
             transition: background 0.2s;
             font-size: 0.9em;
         }
-        .lang-options button.selected, .bg-options button.selected {
+        .lang-options button.selected {
             background: #e43f5a;
         }
-        .lang-options button:hover, .bg-options button:not(.selected):hover {
+        .lang-options button:hover:not(.selected) {
             background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* YENİ: Arka Plan Seçeneği Kapsayıcı Stili */
+        .bg-options {
+            display: flex;
+            flex-wrap: wrap; /* Butonların yan yana gelmesini sağlar */
+            gap: 8px;
+        }
+        
+        /* YENİ: Arka Plan Buton Stili (Genişletildi) */
+        .bg-options button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px; /* Önizleme resmi için yer */
+            height: 90px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75em;
+            line-height: 1.2;
+            text-align: center;
+        }
+        .bg-options button.selected {
+            border: 2px solid #e43f5a; /* Kırmızı çerçeve */
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px;
+        }
+        .bg-options button:hover:not(.selected) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* YENİ: Önizleme Resmi Stili */
+        .bg-preview {
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
         }
         
         /* Süre Inputları için özel stil */
@@ -556,7 +602,7 @@
             { nameKey: 'bg_focus', file: 'focus-bg.jpg'},
             { nameKey: 'bg_rain', file: 'rain.jpg'},
             { nameKey: 'bg_forest', file: 'forest.jpg'},
-            { nameKey: 'bg_black', file: 'pure-black'}
+            { nameKey: 'bg_black', file: 'pure-black'} // 'pure-black' için özel durum
         ];
 
         // --- DOM Elementleri ---
@@ -593,6 +639,7 @@
         let SHORT_BREAK_DURATION = 5 * 60; 
         let LONG_BREAK_DURATION = 15 * 60; 
         let currentLanguage = 'tr'; 
+        let currentBackgroundFile = 'focus-bg.jpg'; // Mevcut seçili arka planı tutmak için
 
         let currentDuration = POMODORO_DURATION;
         let isRunning = false;
@@ -682,7 +729,10 @@
             document.getElementById(`lang-${lang}-btn`).classList.add('selected');
 
             currentLanguage = lang;
-            renderBackgroundOptions();
+            if (settingsPanel.style.display === 'block') {
+                 // Ayarlar açıksa, çeviri yaparken arka plan seçeneklerini yeniden yükle
+                 renderBackgroundOptions();
+            }
         }
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
@@ -776,8 +826,9 @@
             }
         }
         
-        function changeBackground(fileName, buttonElement) {
+        function changeBackground(fileName, buttonElement = null) {
             const body = document.body;
+            currentBackgroundFile = fileName;
             
             // Arka planı tamamen siyah yap
             if (fileName === 'pure-black') {
@@ -795,19 +846,49 @@
             document.querySelectorAll('.bg-options button').forEach(btn => btn.classList.remove('selected'));
             if (buttonElement) {
                  buttonElement.classList.add('selected');
+            } else {
+                 // Sayfa yüklendiğinde varsayılanı işaretle
+                 const defaultButton = document.querySelector(`.bg-options button[data-file="${fileName}"]`);
+                 if (defaultButton) defaultButton.classList.add('selected');
             }
         }
 
+        // YENİ: Önizleme butonlarını oluşturan fonksiyon
         function renderBackgroundOptions() {
             bgOptionsContainer.innerHTML = '';
             BACKGROUND_OPTIONS.forEach(option => {
                 const button = document.createElement('button');
-                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
+                
+                // Önizleme divi oluştur
+                const previewDiv = document.createElement('div');
+                previewDiv.classList.add('bg-preview');
+                
+                // Siyah arka plan için özel stil
+                if (option.file === 'pure-black') {
+                    previewDiv.style.backgroundColor = '#000000';
+                    previewDiv.style.border = '1px solid white';
+                } else {
+                    // Resim yoluyla arka plan ayarla
+                    previewDiv.style.backgroundImage = `url('${option.file}')`;
+                }
+
+                // Butonun iç içeriğini ayarla
+                button.appendChild(previewDiv);
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
+                button.appendChild(textSpan);
+
+                // Veri niteliği ekle (changeBackground fonksiyonu için)
+                button.setAttribute('data-file', option.file);
+
                 button.onclick = () => changeBackground(option.file, button);
-                // İlk seçenek varsayılan olarak seçili gelir (varsa)
-                if (option.file === 'focus-bg.jpg') {
+                
+                // Eğer bu buton mevcut seçili arka plan ise, seçili olarak işaretle
+                if (option.file === currentBackgroundFile) {
                     button.classList.add('selected');
                 }
+                
                 bgOptionsContainer.appendChild(button);
             });
         }
@@ -892,7 +973,7 @@
                 shortBreakInput.value = SHORT_BREAK_DURATION / 60;
                 longBreakInput.value = LONG_BREAK_DURATION / 60;
                 
-                renderBackgroundOptions();
+                renderBackgroundOptions(); // Menü açıldığında önizlemeleri yeniden yükle
                 settingsPanel.style.display = 'block';
             }
         });
@@ -948,11 +1029,9 @@
         updateTimerDisplay();
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Varsayılan arka planı ayarla
-            const initialBgButton = document.querySelector('.bg-options button');
-            if(initialBgButton) {
-                changeBackground(BACKGROUND_OPTIONS[0].file, initialBgButton);
-            }
+            // Varsayılan arka planı ayarla ve butonu işaretle
+            changeBackground(BACKGROUND_OPTIONS[0].file);
+            renderBackgroundOptions(); // İlk yüklemede butonları oluştur
             
             // Varsayılan Spotify çalma listesini yükle
             loadCustomSource(DEFAULT_SPOTIFY_ID);
