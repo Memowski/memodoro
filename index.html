@@ -332,7 +332,7 @@
             bottom: 60px; 
             right: 80px; 
             width: 300px; 
-            height: 420px; /* Tekrar Spotify oynatıcıya uygun yüksekliğe çıkarıldı */
+            height: 420px;
             background: rgba(30, 30, 30, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 10px;
@@ -405,7 +405,6 @@
         /* Spotify Iframe Stili */
         #spotify-iframe {
              border-radius: 8px;
-             /* İframe'in default olarak gizlenmesini sağlamak için CSS kullanıyoruz */
         }
 
     </style>
@@ -600,7 +599,7 @@
         let interval;
         let timeRemaining = currentDuration;
 
-        // Varsayılan Spotify Çalma Listesi ID'si (Örn: Deep Focus)
+        // Varsayılan Spotify Çalma Listesi ID'si (Deep Focus Playlist ID)
         const DEFAULT_SPOTIFY_ID = '37i9dQZF1DWZtpmH17tQ2P'; 
         
         // Input Elementleri
@@ -816,7 +815,7 @@
         // --- ÇALMA LİSTESİ / SES YÜKLEME İŞLEVİ ---
 
         function extractPlaylistId(url) {
-            // 1. Standard URL: https://open.spotify.com/playlist/...
+            // 1. Standard URL: https://open.spotify.com/playlist/[ID]?...
             const urlMatch = url.match(/playlist\/([a-zA-Z0-9]+)/);
             if (urlMatch && urlMatch[1]) return urlMatch[1];
             // 2. Spotify URI: spotify:playlist:[ID]
@@ -832,8 +831,8 @@
             const playlistId = extractPlaylistId(userInput);
             
             if (playlistId) {
-                // --- SPOTIFY YÜKLEME ---
-                const embedUrl = `http://googleusercontent.com/spotify.com/playlist/${playlistId}?utm_source=generator`;
+                // --- SPOTIFY YÜKLEME (HATA DÜZELTİLDİ: Doğru HTTPS URL kullanıldı) ---
+                const embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0&view=list&cover=1`;
                 
                 // HTML5 Oynatıcıyı durdur ve gizle
                 html5AudioPlayer.pause();
@@ -849,7 +848,7 @@
                 }
                 sourceInput.value = ''; 
 
-            } else if (userInput.startsWith('http') && (userInput.includes('.mp3') || userInput.includes('stream'))) {
+            } else if (userInput.startsWith('http') && (userInput.includes('.mp3') || userInput.includes('stream') || userInput.includes('.ogg') || userInput.includes('.wav'))) {
                 // --- SES DOSYASI YÜKLEME ---
                 
                 // Spotify Oynatıcıyı gizle
