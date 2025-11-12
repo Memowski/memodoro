@@ -299,20 +299,20 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* --- MÜZİK PANELİ STİLİ --- */
+        /* --- MÜZİK PANELİ STİLİ VE SPOTIFY ALANI --- */
         #music-panel {
             position: absolute;
             bottom: 60px; 
             right: 80px; 
             width: 300px; 
-            height: 350px;
+            height: 420px; /* Daha fazla yer açıldı */
             background: rgba(30, 30, 30, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             z-index: 99;
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             text-align: left; 
         }
         #music-header {
@@ -325,7 +325,7 @@
         }
         #music-title {
             font-weight: 600;
-            color: #1ed760; /* Spotify Yeşili */
+            color: #1ed760; 
         }
         #close-music-btn {
             background: none;
@@ -342,42 +342,45 @@
         #music-panel iframe {
             border-radius: 8px;
             display: block;
+            margin-bottom: 10px;
         }
-
-        /* --- SPOTIFY BÖLÜMÜ STİLLERİ (YENİ) --- */
+        
+        /* Spotify Özel Stiller */
         #spotify-connect-button {
-            background-color: #1DB954; /* Spotify Yeşil */
+            background-color: #1DB954; 
             color: white;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 500px;
-            font-size: 1em;
+            font-size: 0.9em;
             cursor: pointer;
             transition: background-color 0.3s;
             display: block;
-            width: 60%;
-            margin: 15px auto;
+            width: 90%;
+            margin: 10px auto;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
         #spotify-connect-button:hover {
             background-color: #179d49;
         }
         #spotify-status {
-            margin-bottom: 15px;
             font-weight: 500;
             color: #fff;
             text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
         }
         #spotify-content-area {
-            margin-top: 15px;
-            max-height: 200px;
+            margin-top: 10px;
+            max-height: 120px;
             overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(0, 0, 0, 0.3);
             padding: 5px;
             border-radius: 8px;
         }
+
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
@@ -400,15 +403,23 @@
             <span id="music-title">Odak Müzik</span>
             <button id="close-music-btn">✖</button>
         </div>
+        
         <iframe src="https://open.spotify.com/embed/playlist/XXXXXXXXXXX?utm_source=generator" 
                 width="100%" 
-                height="300" 
+                height="150" 
                 frameBorder="0" 
                 allowfullscreen="" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                 loading="lazy">
         </iframe>
-        
+
+        <div id="spotify-section">
+            <h3 style="font-size: 1.1em; margin-bottom: 5px;">Spotify Çalma Listelerim</h3>
+            <div id="spotify-status">Spotify'a bağlanılmadı.</div>
+            <button id="spotify-connect-button">Spotify ile Giriş Yap</button>
+            <div id="spotify-content-area" style="display: none;">
+                </div>
+        </div>
     </div>
 
     <div id="settings-panel">
@@ -463,8 +474,7 @@
             <button id="start-btn" data-key="start_btn">BAŞLAT</button>
             <button id="reset-btn" data-key="reset_btn">↻</button> 
         </div>
-        
-        </div>
+    </div>
     
     <script>
         // --- DİL SÖZLÜĞÜ ---
@@ -540,6 +550,12 @@
         const musicPanel = document.getElementById('music-panel');
         const closeMusicBtn = document.getElementById('close-music-btn');
 
+        // --- SPOTIFY DEĞİŞKENLERİ VE ELEMANLARI (YENİ) ---
+        let spotifyAccessToken = null;
+        const spotifyConnectButton = document.getElementById('spotify-connect-button');
+        const spotifyStatus = document.getElementById('spotify-status');
+        const spotifyContentArea = document.getElementById('spotify-content-area');
+
 
         // Sabitler ve Değişkenler
         let POMODORO_DURATION = 25 * 60;
@@ -557,35 +573,6 @@
         const shortBreakInput = document.getElementById('short-break-input');
         const longBreakInput = document.getElementById('long-break-input');
 
-        // --- SPOTIFY DEĞİŞKENLERİ VE ELEMANLARI (YENİ) ---
-        let spotifyAccessToken = null;
-        
-        const spotifyConnectButton = document.createElement('button');
-        spotifyConnectButton.id = 'spotify-connect-button';
-        spotifyConnectButton.textContent = 'Spotify ile Giriş Yap';
-
-        const spotifyStatus = document.createElement('div');
-        spotifyStatus.id = 'spotify-status';
-        spotifyStatus.textContent = "Spotify'a bağlanılmadı.";
-
-        const spotifyContentArea = document.createElement('div');
-        spotifyContentArea.id = 'spotify-content-area';
-        spotifyContentArea.style.display = 'none';
-
-        const spotifySection = document.createElement('div');
-        spotifySection.id = 'spotify-section';
-        spotifySection.style.marginTop = '20px';
-        spotifySection.style.paddingTop = '15px';
-        spotifySection.style.borderTop = '1px solid rgba(255, 255, 255, 0.2)';
-        spotifySection.style.textAlign = 'center';
-
-        // Spotify bölümünü oluştur ve konteynıra ekle
-        spotifySection.appendChild(document.createElement('h2')).textContent = 'Spotify Entegrasyonu';
-        spotifySection.querySelector('h2').style.fontSize = '1.2em';
-        spotifySection.querySelector('h2').style.marginBottom = '10px';
-        spotifySection.appendChild(spotifyStatus);
-        spotifySection.appendChild(spotifyConnectButton);
-        spotifySection.appendChild(spotifyContentArea);
 
         // --- SÜRE AYARLAMA İŞLEVİ ---
         function applyNewDurations() {
@@ -875,7 +862,6 @@
             let html = playlists.map(playlist => {
                 const imageUrl = playlist.images.length > 0 ? playlist.images[0].url : 'https://placehold.co/40x40';
                 
-                // Stil kodları HTML içindeki `spotify-content-area` stilinde
                 return `
                     <div style="display: flex; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'" onmouseout="this.style.backgroundColor='transparent'" onclick="alert('Playlist: ${playlist.name} seçildi. Oynatma özelliği henüz eklenmedi.')">
                         <img src="${imageUrl}" alt="${playlist.name}" style="width: 30px; height: 30px; border-radius: 4px; margin-right: 10px; object-fit: cover;">
@@ -922,6 +908,8 @@
                 musicPanel.style.display = 'none';
             } else {
                 musicPanel.style.display = 'block';
+                // Müzik menüsü açıldığında Spotify token kontrolünü yap
+                checkSpotifyToken();
             }
         });
         
@@ -946,7 +934,7 @@
 
 
         window.setLanguage = translateUI;
-        window.applyNewDurations = applyNewDurations; // HTML'den çağrılmak için
+        window.applyNewDurations = applyNewDurations; 
         window.changeBackground = changeBackground;
 
 
@@ -956,10 +944,8 @@
         updateTimerDisplay();
         changeBackground(BACKGROUND_OPTIONS[0].file);
         
-        // SPOTIFY BÖLÜMÜNÜ EKLE
-        container.appendChild(spotifySection);
-        // SPOTIFY BAĞLANTISINI KONTROL ET
-        checkSpotifyToken();
+        // NOT: checkSpotifyToken() çağrısı artık musicBtn'in click event'inde
+        // ve sayfa ilk yüklendiğinde (token varsa) yapılmaktadır.
     </script>
 </body>
 </html>
