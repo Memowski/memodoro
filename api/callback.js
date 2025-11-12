@@ -1,7 +1,6 @@
-// api/callback.js (Emin olmak için bu kodu tekrar kopyalayıp yapıştırabilirsiniz)
+// api/callback.js - GÜNCELLENMİŞ VERSİYON
 
 const axios = require('axios');
-// querystring kütüphanesini doğru şekilde import ettiğimizden emin olalım
 const querystring = require('querystring'); 
 
 const {
@@ -17,7 +16,7 @@ module.exports = async (req, res) => {
     try {
       const response = await axios({
         method: 'post',
-        url: 'https://accounts.spotify.com/api/token', // Burası doğru olmalı
+        url: 'https://accounts.spotify.com/api/token', 
         data: querystring.stringify({
           grant_type: 'authorization_code',
           code: code,
@@ -40,7 +39,16 @@ module.exports = async (req, res) => {
       res.end();
 
     } catch (error) {
-        console.error("Spotify Token Hata Detayı:", error.response ? error.response.data : error.message);
+        // HATA YAKALAMA VE LOGLAMA
+        console.error("HATA DETAYI: Spotify Token İsteği Başarısız Oldu.");
+        if (error.response) {
+            // Spotify'dan gelen 400 Bad Request hatası burada yakalanır
+            console.error("Hata Kodu:", error.response.status);
+            console.error("Hata Verisi:", error.response.data);
+        } else {
+            console.error("Ağ Hatası:", error.message);
+        }
+        
         res.writeHead(302, {
             'Location': '/?error=spotify_auth_failed',
         });
