@@ -1,17 +1,15 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs20.x"
-    }
+  "name": "memodoro-spotify-app",
+  "version": "1.0.0",
+  "description": "Memodoro YKS timer with Spotify integration.",
+  "scripts": {
+    "start": "node index.js"
   },
-  "rewrites": [
-    {
-      "source": "/api/login",
-      "destination": "/api/login.js"
-    },
-    {
-      "source": "/api/callback",
-      "destination": "/api/callback.js"
-    }
-  ]
+  "dependencies": {
+    "axios": "^1.6.8",
+    "querystring": "^0.2.1"
+  },
+  "engines": {
+    "node": "20.x"
+  }
 }
