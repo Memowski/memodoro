@@ -339,10 +339,17 @@
         #close-music-btn:hover {
             opacity: 1;
         }
-        /* Iframe'in panelle uyum sağlaması için genel stil */
-        #music-panel iframe {
-            border-radius: 8px;
-            display: block;
+        /* API ile gelen içerik alanı scrollable olsun */
+        #spotify-player-content {
+             padding: 10px 0;
+             height: 290px; /* Panel içindeki yüksekliği ayarla */
+             overflow-y: auto;
+             overflow-x: hidden;
+        }
+        /* Spotify iFrameleri için stil */
+        #spotify-player-content iframe {
+            border-radius: 12px;
+            margin-bottom: 10px;
         }
 
     </style>
@@ -364,17 +371,22 @@
 
     <div id="music-panel">
         <div id="music-header">
-            <span id="music-title">Odak Müzik</span>
+            <span id="music-title">Spotify Çalma Listeleriniz</span>
             <button id="close-music-btn">✖</button>
         </div>
-        <iframe data-testid="embed-iframe" 
-                style="border-radius:12px; width:100%; height:300px;" 
-                src="https://open.spotify.com/embed/playlist/6zCID88oNjNv9zx6puDHKj?utm_source=generator" 
-                frameBorder="0" 
-                allowfullscreen="" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy">
-        </iframe>
+        
+        <div id="spotify-login-area" style="text-align: center; padding: 20px;">
+            <p id="spotify-status" style="color:#ffffff; margin-bottom: 20px; font-size: 0.9em;"></p>
+            <button id="spotify-login-btn" style="background: #1DB954; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
+                Spotify ile Giriş Yap
+            </button>
+        </div>
+
+        <div id="spotify-player-content" style="display:none; overflow-y: auto;">
+            <p style="text-align: center; color: #aaa; padding-top: 50px;">
+                Çalma listeleri yükleniyor...
+            </p>
+        </div>
         
     </div>
 
@@ -505,6 +517,13 @@
         const musicBtn = document.getElementById('music-btn');
         const musicPanel = document.getElementById('music-panel');
         const closeMusicBtn = document.getElementById('close-music-btn');
+        
+        // Spotify DOM Elementleri
+        const spotifyLoginArea = document.getElementById('spotify-login-area');
+        const spotifyLoginBtn = document.getElementById('spotify-login-btn');
+        const spotifyContentArea = document.getElementById('spotify-player-content');
+        const spotifyStatus = document.getElementById('spotify-status');
+        let spotifyAccessToken = null;
 
 
         // Sabitler ve Değişkenler
@@ -681,7 +700,7 @@
             updateTimerDisplay();
         }
         
-        // --- DİĞER İŞLEVLER ---
+        // --- ARKA PLAN VE DİĞER İŞLEVLER ---
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -723,6 +742,102 @@
                 bgOptionsContainer.appendChild(button);
             });
         }
+        
+        // --- SPOTIFY İŞLEVLERİ (API ENTEGRASYONU) ---
+
+        // API'dan çalma listelerini çeken fonksiyon
+        async function fetchPlaylists(token) {
+            spotifyContentArea.innerHTML = '<p style="text-align: center; color: #aaa; padding-top: 50px;">Çalma listeleri yükleniyor...</p>';
+            try {
+                // Spotify API'dan kullanıcının çalma listelerini çek
+                const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=5', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    renderPlaylists(data.items);
+                } else if (response.status === 401) { // 401 Unauthorized, token süresi dolmuş olabilir
+                    updateSpotifyUI(false, "Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
+                    localStorage.removeItem('spotify_access_token');
+                } else {
+                    throw new Error('API yanıtı başarısız oldu: ' + response.status);
+                }
+            } catch (error) {
+                spotifyStatus.textContent = "Çalma listeleri yüklenirken hata oluştu. Lütfen tekrar giriş yapın.";
+                console.error("Spotify API Hatası:", error);
+                updateSpotifyUI(false, "API Bağlantı Hatası.");
+            }
+        }
+
+        // Çalma listelerini HTML'e render eden fonksiyon
+        function renderPlaylists(playlists) {
+            spotifyContentArea.innerHTML = '';
+            if (playlists.length === 0) {
+                 spotifyContentArea.innerHTML = '<p style="text-align: center; color: #aaa; padding-top: 50px;">Hiç çalma listeniz bulunamadı.</p>';
+                 return;
+            }
+
+            playlists.forEach(playlist => {
+                const iframeHtml = `
+                    <div style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 5px;">
+                        <p style="font-weight: bold; color: #fff; margin-bottom: 5px; font-size: 0.9em; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${playlist.name}</p>
+                        <iframe 
+                            style="border-radius:12px; border: 0;" 
+                            src="https://open.spotify.com/embed/playlist/$${playlist.id}?utm_source=generator&theme=0" 
+                            width="100%" 
+                            height="152" 
+                            frameBorder="0" 
+                            allowfullscreen="" 
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                `;
+                spotifyContentArea.innerHTML += iframeHtml;
+            });
+            updateSpotifyUI(true, "Çalma listeleriniz yüklendi.");
+        }
+
+        // Spotify arayüzünü token durumuna göre güncelleyen fonksiyon
+        function updateSpotifyUI(isConnected, statusText = '') {
+            if (isConnected) {
+                spotifyLoginArea.style.display = 'none';
+                spotifyContentArea.style.display = 'block';
+                spotifyStatus.textContent = statusText || "Spotify'a bağlısınız.";
+            } else {
+                spotifyLoginArea.style.display = 'block';
+                spotifyContentArea.style.display = 'none';
+                spotifyStatus.textContent = statusText || "Kişisel çalma listelerinizi görmek için lütfen giriş yapın.";
+            }
+        }
+
+        // URL'den Access Token'ı kontrol eden ve yakalayan fonksiyon
+        function checkSpotifyToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Yeni token'ı kontrol et (callback.js'ten geliyor)
+            spotifyAccessToken = urlParams.get('spotify_token');
+            const error = urlParams.get('error');
+
+            if (spotifyAccessToken) {
+                // Token alındıysa kaydet ve URL'den temizle
+                localStorage.setItem('spotify_access_token', spotifyAccessToken);
+                window.history.replaceState({}, document.title, window.location.pathname); 
+                spotifyStatus.textContent = "Giriş başarılı, çalma listeleri yükleniyor...";
+                fetchPlaylists(spotifyAccessToken);
+            } else if (localStorage.getItem('spotify_access_token')) {
+                // Lokal depolamada token varsa kullan
+                spotifyAccessToken = localStorage.getItem('spotify_access_token');
+                spotifyStatus.textContent = "Önceki oturumdan bağlanılıyor...";
+                fetchPlaylists(spotifyAccessToken);
+            } else if (error) {
+                updateSpotifyUI(false, "Spotify bağlantısı başarısız oldu.");
+            } else {
+                updateSpotifyUI(false);
+            }
+        }
 
 
         // --- Olay Dinleyicileri ---
@@ -762,6 +877,12 @@
         closeMusicBtn.addEventListener('click', () => {
             musicPanel.style.display = 'none';
         });
+        
+        // Spotify Giriş Butonu Olayı
+        spotifyLoginBtn.addEventListener('click', () => {
+            // Kullanıcıyı Vercel Serverless Function'a yönlendir (api/login.js)
+            window.location.href = '/api/login'; 
+        });
 
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
@@ -788,6 +909,8 @@
         mainTitle.setAttribute('data-initial', 'true');
         translateUI('tr');
         updateTimerDisplay();
+        checkSpotifyToken(); // Spotify token kontrolünü başlat
+        
         // Varsayılan olarak ilk arkaplanı seç
         const initialBgButton = document.querySelector('.bg-options button');
         if (initialBgButton) {
