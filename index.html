@@ -255,28 +255,7 @@
         }
         .bg-options button.selected { border-color: #1ed760; transform: scale(1.05); }
         
-        /* YENİ EKLEME: Video butonu için koyu arka plan */
-        .bg-options button.video-thumb {
-            background-color: #333333; 
-        }
-
-        .bg-options button.video-thumb::after {
-            content: "▶";
-            font-size: 24px;
-            color: #ffffff;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3); 
-            border-radius: 5px;
-        }
+        /* Sadece siyah arka plan için */
         .bg-options button.black-thumb {
             background-color: #000000;
         }
@@ -478,8 +457,8 @@
         };
 
         const BACKGROUND_OPTIONS = [
-            // DÜZELTME: Video için statik önizleme resmi kaldırıldı, sadece play simgesi kalacak
-            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: ''}, 
+            // GÜNCELLEME YAPILDI: Video için önizleme dosyası 'assets/dappy.jpg' olarak değiştirildi.
+            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: 'assets/dappy.jpg'}, 
             { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/focus-bg.jpg'},
             { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/rain.jpg'},
             { nameKey: 'bg_forest', file: 'assets/forest.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/forest.jpg'},
@@ -531,7 +510,7 @@
         let spotifyAccessToken = null; 
         let currentPlaylistUri = null; 
         
-        // --- SPOTIFY FONKSİYONLARI ---
+        // --- SPOTIFY FONKSİYONLARI (Değişmedi) ---
         function updateSpotifyUI(loggedIn, message = "") {
             if (loggedIn) {
                 spotifyLoginBtn.style.display = 'none';
@@ -613,7 +592,7 @@
             }
         }
         
-        // --- SÜRE AYARLAMA İŞLEVİ ---
+        // --- SÜRE AYARLAMA İŞLEVİ (Değişmedi) ---
         function applyNewDurations() {
             const newPomodoro = Math.max(1, parseInt(pomodoroInput.value) || 25);
             const newShort = Math.max(1, parseInt(shortBreakInput.value) || 5);
@@ -641,7 +620,7 @@
             alert('Yeni süreler başarıyla uygulandı!');
         }
 
-        // --- DİL VE ÇEVİRİ İŞLEVLERİ ---
+        // --- DİL VE ÇEVİRİ İŞLEVLERİ (Değişmedi) ---
         function translateUI(lang) {
             const texts = TRANSLATIONS[lang];
             
@@ -683,7 +662,7 @@
             currentLanguage = lang;
         }
         
-        // --- ZAMANLAYICI İŞLEVLERİ ---
+        // --- ZAMANLAYICI İŞLEVLERİ (Değişmedi) ---
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -770,7 +749,7 @@
             updateTimerDisplay();
         }
         
-        // --- DİĞER İŞLEVLER VE ARKA PLAN KONTROLÜ ---
+        // --- DİĞER İŞLEVLER VE ARKA PLAN KONTROLÜ (Değişmedi) ---
         
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
@@ -829,6 +808,7 @@
                 button.textContent = TRANSLATIONS[currentLanguage][option.nameKey]; 
                 
                 if (option.thumbFile) {
+                    // Video seçeneği için artık 'assets/dappy.jpg' kullanılacak
                     button.style.backgroundImage = `url('${option.thumbFile}')`;
                 }
                 if (option.thumbClass) {
@@ -855,7 +835,7 @@
         }
 
 
-        // --- Olay Dinleyicileri ---
+        // --- Olay Dinleyicileri (Değişmedi) ---
         
         fullscreenBtn.addEventListener('click', toggleFullscreen);
 
