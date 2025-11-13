@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title id="doc-title">YKS Zamanlayıcısı</title>
     
     <style>
@@ -37,7 +37,7 @@
             animation: fadeIn 0.8s ease-out; 
         }
 
-        /* VİDEO ARKA PLAN STİLİ - Başlangıçta gizli */
+        /* VİDEO ARKA PLAN STİLİ */
         #background-video {
             position: fixed;
             right: 0;
@@ -46,7 +46,7 @@
             min-height: 100%;
             width: auto;
             height: auto;
-            z-index: -101; /* Statik arkaplanın (body) arkasına gönder */
+            z-index: -101; 
             object-fit: cover; 
             transition: opacity 0.5s;
         }
@@ -56,7 +56,7 @@
             padding: 50px;
             border-radius: 10px;
             text-align: center;
-            max-width: 500px;
+            max-width: 500px; /* Masaüstü/Tablet Sınırı */
             width: 100%;
         }
 
@@ -126,9 +126,6 @@
             color: white;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); 
         }
-        .modes button:not(.active):hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
 
 
         /* --- ZAMANLAYICI EKRANI --- */
@@ -168,11 +165,6 @@
         #pause-btn {
              background-color: #e43f5a; 
         }
-
-        #start-btn:hover, #pause-btn:hover {
-            opacity: 0.9;
-            background-color: rgba(255, 255, 255, 0.4);
-        }
         
         /* Sıfırla Butonu (Yenile Simgesi) */
         #reset-btn {
@@ -185,11 +177,6 @@
             transition: color 0.2s, transform 0.2s;
             margin-left: 10px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        #reset-btn:hover {
-            color: #d1b4e0;
-            transform: rotate(90deg);
         }
         
         /* --- AYARLAR VE KONTROL TUŞLARI --- */
@@ -218,16 +205,6 @@
             text-decoration: none;
         }
         
-        .bottom-right-controls button:hover, .bottom-right-controls a:hover {
-            opacity: 1;
-        }
-        
-        /* Zil Sesi Kapalı Stili */
-        #sound-toggle-btn.sound-off {
-            opacity: 0.4;
-            text-decoration: line-through; 
-        }
-        
         /* Ayarlar Paneli */
         #settings-panel {
             position: absolute;
@@ -243,7 +220,25 @@
             display: none; 
             text-align: left; 
         }
-        /* (Ayarlar paneli içindeki diğer stiller (setting-group, input vb.) önceki kodunuzdan korunmuştur) */
+        .setting-group {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .time-setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .time-setting-item input {
+            width: 50px;
+            text-align: right;
+            padding: 5px;
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
         /* --- MÜZİK PANELİ STİLİ (Spotify Kontrol) --- */
         #music-panel {
@@ -260,7 +255,109 @@
             display: none; 
             text-align: left; 
         }
-        /* (Müzik paneli içindeki diğer stiller (music-header, spotify-login-btn vb.) önceki kodunuzdan korunmuştur) */
+
+        /* ================================================= */
+        /* MOBİL OPTİMİZASYON (MEDIA QUERY)         */
+        /* ================================================= */
+
+        @media (max-width: 600px) {
+            
+            /* Genel Görüntü Ayarları */
+            body {
+                /* Telefonlarda kaydırmayı engellemek için gerekli olabilir */
+                overflow-y: auto; 
+            }
+
+            .container {
+                /* Telefon ekranının tamamını kullan */
+                padding: 20px;
+                max-width: 95%;
+                /* Zamanlayıcıyı biraz yukarı kaydır */
+                margin-top: 10vh; 
+            }
+            
+            /* Başlık ve Sözler Bölümü */
+            .header-top {
+                top: 10px;
+                left: 15px;
+                right: 15px;
+            }
+            #app-logo {
+                font-size: 1.2em;
+            }
+            #quote {
+                /* Telefonlarda alıntı sözünü gizle, çünkü yer kaplıyor */
+                display: none; 
+            }
+            
+            /* Zamanlayıcı Ekranı */
+            .timer {
+                /* Font boyutunu küçült */
+                font-size: 6em; 
+            }
+            
+            /* Mod Butonları */
+            .modes {
+                margin-bottom: 20px; 
+            }
+            .modes button {
+                /* Buton metnini küçült */
+                font-size: 0.85em;
+                padding: 6px 10px;
+            }
+            
+            /* Kontrol Butonları (Başlat/Durdur/Sıfırla) */
+            .controls {
+                gap: 10px;
+            }
+            #start-btn, #pause-btn {
+                /* Daha dar ve kısa yap */
+                padding: 12px 25px;
+                font-size: 1.1em;
+                min-width: 120px;
+            }
+            #reset-btn {
+                font-size: 1.8em;
+                margin-left: 5px;
+            }
+
+            /* Alt Sağ Köşe Kontrolleri (Zil/Müzik/Ayarlar/Tam Ekran) */
+            .bottom-right-controls {
+                /* Konumu koru ama butonu küçült */
+                bottom: 10px;
+                right: 10px;
+                gap: 10px;
+            }
+            .bottom-right-controls button, .bottom-right-controls a {
+                font-size: 1.5em; /* İkonları küçült */
+            }
+
+            /* Ayarlar ve Müzik Panelleri */
+            #settings-panel, #music-panel {
+                /* Tam ekran genişliğine getir */
+                width: 90%; 
+                left: 50%;
+                transform: translateX(-50%);
+                /* Sayfanın altına sabitle ve yukarı doğru uzat */
+                bottom: 50px; 
+                right: auto;
+                max-height: 80vh; 
+                overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
+            }
+            
+            /* Ayarlar panelindeki input ve butonları mobil için düzenle */
+            .setting-group label, .time-setting-item label {
+                font-size: 1em; 
+            }
+            .lang-options button, .bg-options button {
+                 display: block;
+                 width: 100%;
+                 margin-right: 0;
+                 margin-bottom: 5px;
+            }
+
+        } /* End of media query */
+
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
@@ -377,7 +474,7 @@
                 'continue_btn': 'DEVAM ET',
                 'alert_message': 'Süre bitti! Yeni moda geçiliyor.',
                 'bg_focus': 'Odak Yolu (Resim)',
-                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', // YENİ ÇEVİRİ
+                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', 
                 'bg_rain': 'Yağmur (Resim)',
                 'bg_forest': 'Orman (Resim)',
                 'bg_black': 'Siyah (Düz Renk)'
@@ -397,7 +494,7 @@
                 'continue_btn': 'RESUME',
                 'alert_message': 'Time\'s up! Switching mode.',
                 'bg_focus': 'Focus Path (Image)',
-                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', // YENİ ÇEVİRİ
+                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', 
                 'bg_rain': 'Rain (Image)',
                 'bg_forest': 'Forest (Image)',
                 'bg_black': 'Black (Solid Color)'
@@ -405,7 +502,6 @@
         };
 
         const BACKGROUND_OPTIONS = [
-            // type: 'video' olarak eklendi
             { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video'}, 
             { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image'},
             { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image'},
@@ -414,7 +510,6 @@
         ];
 
         // --- DOM Elementleri ve Değişken Tanımlamaları ---
-        // (Önceki koddan korunmuştur)
         const timerDisplay = document.getElementById('timer');
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.createElement('button'); 
@@ -441,8 +536,6 @@
         const pomodoroInput = document.getElementById('pomodoro-input');
         const shortBreakInput = document.getElementById('short-break-input');
         const longBreakInput = document.getElementById('long-break-input');
-        
-        // VİDEO İÇİN YENİ TANIMLAMALAR
         const videoElement = document.getElementById('background-video'); 
         const videoSource = document.getElementById('video-source'); 
         
@@ -460,7 +553,6 @@
         let currentPlaylistUri = null; 
         
         // --- SPOTIFY FONKSİYONLARI ---
-        // (Önceki koddan korunmuştur: updateSpotifyUI, fetchPlaylists, renderPlaylists, playPlaylist, checkSpotifyToken)
         function updateSpotifyUI(loggedIn, message = "") {
             if (loggedIn) {
                 spotifyLoginBtn.style.display = 'none';
@@ -542,7 +634,6 @@
         }
         
         // --- SÜRE AYARLAMA İŞLEVİ ---
-        // (Önceki koddan korunmuştur: applyNewDurations)
         function applyNewDurations() {
             const newPomodoro = Math.max(1, parseInt(pomodoroInput.value) || 25);
             const newShort = Math.max(1, parseInt(shortBreakInput.value) || 5);
@@ -571,7 +662,6 @@
         }
 
         // --- DİL VE ÇEVİRİ İŞLEVLERİ ---
-        // (Önceki koddan korunmuştur: translateUI)
         function translateUI(lang) {
             const texts = TRANSLATIONS[lang];
             
@@ -615,7 +705,6 @@
         }
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
-        // (Önceki koddan korunmuştur: formatTime, updateTimerDisplay, startTimer, pauseTimer, resetTimer, switchMode)
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -642,7 +731,6 @@
                     clearInterval(interval);
                     isRunning = false;
                     
-                    // ZİL SESİ KONTROLÜ
                     if (isSoundOn) {
                         dingSound.play();
                         dingSound.currentTime = 0;
@@ -711,44 +799,35 @@
             }
         }
         
-        // YENİ VE GÜNCELLENMİŞ ARKA PLAN KONTROL FONKSİYONU
         function changeBackground(optionFile, optionType, buttonElement) {
             const body = document.body;
             
-            // 1. Video Kontrolü
             if (optionType === 'video') {
-                // Statik arkaplanı kaldır
                 body.style.backgroundImage = 'none';
                 body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
                 body.style.backgroundBlendMode = 'overlay';
                 
-                // Video elementini göster ve kaynağını ayarla
                 videoElement.style.display = 'block';
                 videoSource.src = optionFile;
                 videoElement.load();
                 videoElement.play().catch(error => {
                     console.error("Video oynatılırken otomatik oynatma hatası:", error);
-                    // Otomatik oynatma engellenirse uyarı verebilirsiniz.
                 });
 
             } else {
-                // Statik veya Renk Seçildiğinde Video'yu gizle
                 videoElement.style.display = 'none';
 
                 if (optionFile === 'pure-black') {
-                    // Düz Siyah Renk
                     body.style.backgroundImage = 'none';
                     body.style.backgroundColor = '#000000';
                     body.style.backgroundBlendMode = 'none';
                 } else {
-                    // Statik Resim Seçildi
                     body.style.backgroundImage = `url('${optionFile}')`;
                     body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
                     body.style.backgroundBlendMode = 'overlay';
                 }
             }
 
-            // Butonları güncelle
             document.querySelectorAll('.bg-options button').forEach(btn => btn.classList.remove('selected'));
             if (buttonElement) {
                  buttonElement.classList.add('selected');
@@ -761,10 +840,8 @@
                 const button = document.createElement('button');
                 button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
                 
-                // changeBackground'a artık dosya adının yanı sıra türü de gönderiyoruz.
                 button.onclick = () => changeBackground(option.file, option.type, button);
                 
-                // Varsayılan (ilk) resmi selected olarak işaretle (lofi_v1.mp4 ilk sıraya geldi)
                 if (option.file === BACKGROUND_OPTIONS[0].file) {
                      button.classList.add('selected');
                 }
@@ -792,7 +869,6 @@
             }
         });
         
-        // Müzik Menüsü Olay Dinleyicileri
         musicBtn.addEventListener('click', () => {
             settingsPanel.style.display = 'none';
 
@@ -815,7 +891,6 @@
         shortBreakBtn.addEventListener('click', () => { switchMode(SHORT_BREAK_DURATION, shortBreakBtn); });
         longBreakBtn.addEventListener('click', () => { switchMode(LONG_BREAK_DURATION, longBreakBtn); });
         
-        // Zil Sesi Kontrol Dinleyicisi
         soundToggleBtn.addEventListener('click', () => {
             isSoundOn = !isSoundOn;
             
@@ -830,7 +905,6 @@
             }
         });
         
-        // Spotify Dinleyicileri
         spotifyLoginBtn.addEventListener('click', () => {
             window.location.href = '/api/login';
         });
@@ -855,7 +929,6 @@
         translateUI('tr');
         updateTimerDisplay();
         
-        // BAŞLANGIÇTA VİDEOYU AYARLA (İlk seçenek lofi_v1.mp4 olduğu için)
         changeBackground(BACKGROUND_OPTIONS[0].file, BACKGROUND_OPTIONS[0].type); 
         checkSpotifyToken(); 
     </script>
