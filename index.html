@@ -63,37 +63,6 @@
             padding-bottom: 20px; 
         }
 
-        /* AdSense Konteyner Stili (Sol Köşe) */
-        #adsense-left-container {
-            position: fixed; /* Sabit konumlandırma */
-            top: 100px; /* Başlıktan biraz aşağıda */
-            left: 20px;
-            z-index: 90; /* İçeriğin üzerinde, arka planın altında */
-            pointer-events: all;
-            max-width: 300px; /* Maksimum genişlik */
-            width: 100%;
-            /* Reklamın görünürlüğünü artırmak için hafif bir arka plan */
-            background: rgba(30, 30, 30, 0.7); 
-            padding: 5px;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(3px); /* Hafif bulanıklık */
-        }
-        
-        #ad-unit-placeholder {
-            width: 100%;
-            height: 250px; /* Örnek yükseklik */
-            background-color: rgba(255, 255, 255, 0.1); 
-            border: 1px dashed rgba(255, 255, 255, 0.4);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #ffffff;
-            font-size: 0.9em;
-            text-align: center;
-        }
-
         /* --- BAŞLIK VE SÖZLER --- */
         .header-top {
             position: absolute;
@@ -113,6 +82,14 @@
             letter-spacing: 2px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
             pointer-events: all;
+            display: flex; /* Logoyu ve metni yan yana hizalamak için */
+            align-items: center; /* Dikeyde ortala */
+            gap: 8px; /* Logo ve metin arasına boşluk */
+        }
+
+        #app-logo img {
+            height: 1.5em; /* Metin yüksekliğiyle eşleşmesi için */
+            width: auto;
         }
 
         #quote {
@@ -304,11 +281,6 @@
                 overflow-y: auto; 
             }
             
-            /* AdSense'i mobil görünümde gizle */
-            #adsense-left-container {
-                display: none;
-            }
-
             .container {
                 padding: 20px;
                 max-width: 95%;
@@ -353,9 +325,6 @@
 
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
-     crossorigin="anonymous"></script>
 </head>
 <body>
     
@@ -364,15 +333,10 @@
         Tarayıcınız video etiketini desteklemiyor.
     </video>
     
-    <div id="adsense-left-container">
-        <div id="ad-unit-placeholder">
-            [Google AdSense Reklam Alanı 300x250]
-            <br><small style="font-size: 0.7em;">(Kendi AdSense kodunuzla değiştirin)</small>
-        </div>
-        </div>
-
     <div class="header-top">
-        <div id="app-logo">memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span></div>
+        <div id="app-logo">
+            <img src="assets/logo.png" alt="Memodoro Logo"> memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span>
+        </div>
         <div id="quote">"Sometimes you win, <br> sometimes you learn"</div>
     </div>
     
@@ -749,222 +713,4 @@
                         startTimer();
                     } else if (currentDuration === SHORT_BREAK_DURATION) {
                         switchMode(POMODORO_DURATION, pomodoroBtn); 
-                    } else if (currentDuration === LONG_BREAK_DURATION) {
-                         switchMode(POMODORO_DURATION, pomodoroBtn);
-                    }
-                    alert(TRANSLATIONS[currentLanguage].alert_message);
-                }
-            }, 1000);
-        }
-        function pauseTimer() { 
-            if (!isRunning) return;
-            isRunning = false;
-            clearInterval(interval);
-            
-            // Butonları değiştirmek için yeni ebeveyni kullan
-            if(pauseBtn.parentElement) {
-                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
-            }
-            startBtn.textContent = TRANSLATIONS[currentLanguage].continue_btn;
-        }
-        function resetTimer() { 
-            pauseTimer(); 
-            // Butonları değiştirmek için yeni ebeveyni kullan
-            if(pauseBtn.parentElement) {
-                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
-            }
-            startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
-            
-            if(pomodoroBtn.classList.contains('active')) {
-                currentDuration = POMODORO_DURATION;
-            } else if (shortBreakBtn.classList.contains('active')) {
-                 currentDuration = SHORT_BREAK_DURATION;
-            } else if (longBreakBtn.classList.contains('active')) {
-                 currentDuration = LONG_BREAK_DURATION;
-            }
-
-            timeRemaining = currentDuration;
-            updateTimerDisplay();
-        }
-        function switchMode(duration, btn) { 
-            resetTimer(); 
-            document.querySelector('.modes button.active').classList.remove('active');
-            btn.classList.add('active');
-            currentDuration = duration;
-            timeRemaining = currentDuration;
-            
-            startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
-            updateTimerDisplay();
-        }
-        
-        // --- DİĞER İŞLEVLER VE ARKA PLAN KONTROLÜ (Değişmedi) ---
-        
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error("Tam ekran etkinleştirilemiyor:", err);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-        
-        function changeBackground(optionFile, optionType, buttonElement) {
-            const body = document.body;
-            
-            if (optionType === 'video') {
-                body.style.backgroundImage = 'none';
-                body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-                body.style.backgroundBlendMode = 'overlay';
-                
-                videoElement.style.display = 'block';
-                videoSource.src = optionFile;
-                videoElement.load();
-                videoElement.play().catch(error => {
-                    console.error("Video oynatılırken otomatik oynatma hatası:", error);
-                });
-
-            } else {
-                videoElement.style.display = 'none';
-
-                if (optionFile === 'pure-black') {
-                    body.style.backgroundImage = 'none';
-                    body.style.backgroundColor = '#000000';
-                    body.style.backgroundBlendMode = 'none';
-                } else {
-                    body.style.backgroundImage = `url('${optionFile}')`;
-                    body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-                    body.style.backgroundBlendMode = 'overlay';
-                }
-            }
-
-            document.querySelectorAll('.bg-options button').forEach(btn => btn.classList.remove('selected'));
-            if (buttonElement) {
-                 buttonElement.classList.add('selected');
-            }
-        }
-
-        function renderBackgroundOptions() {
-            bgOptionsContainer.innerHTML = '';
-            
-            // Seçili arka planı belirlemek için bir kontrol mekanizması
-            const isVideoActive = videoElement.style.display === 'block';
-            const isBlackActive = !isVideoActive && document.body.style.backgroundImage.includes('none') && document.body.style.backgroundColor === 'rgb(0, 0, 0)';
-
-            BACKGROUND_OPTIONS.forEach(option => {
-                const button = document.createElement('button');
-                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey]; 
-                
-                if (option.thumbFile) {
-                    // Video seçeneği için artık 'assets/dappy.jpg' kullanılacak
-                    button.style.backgroundImage = `url('${option.thumbFile}')`;
-                }
-                if (option.thumbClass) {
-                    button.classList.add(option.thumbClass);
-                }
-                
-                button.onclick = () => changeBackground(option.file, option.type, button);
-                
-                let isSelected = false;
-                if (option.type === 'video' && isVideoActive) {
-                    isSelected = true;
-                } else if (option.type === 'color' && isBlackActive) {
-                    isSelected = true;
-                } else if (option.type === 'image' && document.body.style.backgroundImage.includes(option.file)) {
-                    isSelected = true;
-                }
-                
-                if (isSelected) {
-                     button.classList.add('selected');
-                }
-                
-                bgOptionsContainer.appendChild(button);
-            });
-        }
-
-
-        // --- Olay Dinleyicileri (Değişmedi) ---
-        
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-        menuBtn.addEventListener('click', () => {
-            musicPanel.style.display = 'none';
-
-            if (settingsPanel.style.display === 'block') {
-                settingsPanel.style.display = 'none';
-            } else {
-                pomodoroInput.value = POMODORO_DURATION / 60;
-                shortBreakInput.value = SHORT_BREAK_DURATION / 60;
-                longBreakInput.value = LONG_BREAK_DURATION / 60;
-                
-                renderBackgroundOptions(); 
-                settingsPanel.style.display = 'block';
-            }
-        });
-        
-        musicBtn.addEventListener('click', () => {
-            settingsPanel.style.display = 'none';
-
-            if (musicPanel.style.display === 'block') {
-                musicPanel.style.display = 'none';
-            } else {
-                musicPanel.style.display = 'block';
-            }
-        });
-        
-        closeMusicBtn.addEventListener('click', () => {
-            musicPanel.style.display = 'none';
-        });
-
-        startBtn.addEventListener('click', startTimer);
-        pauseBtn.addEventListener('click', pauseTimer);
-        resetBtn.addEventListener('click', resetTimer);
-
-        pomodoroBtn.addEventListener('click', () => { switchMode(POMODORO_DURATION, pomodoroBtn); });
-        shortBreakBtn.addEventListener('click', () => { switchMode(SHORT_BREAK_DURATION, shortBreakBtn); });
-        longBreakBtn.addEventListener('click', () => { switchMode(LONG_BREAK_DURATION, longBreakBtn); });
-        
-        soundToggleBtn.addEventListener('click', () => {
-            isSoundOn = !isSoundOn;
-            
-            if (isSoundOn) {
-                soundToggleBtn.textContent = '🔔';
-                soundToggleBtn.classList.remove('sound-off');
-                soundToggleBtn.title = 'Zil Sesini Kapat';
-            } else {
-                soundToggleBtn.textContent = '🔕';
-                soundToggleBtn.classList.add('sound-off');
-                soundToggleBtn.title = 'Zil Sesini Aç';
-            }
-        });
-        
-        spotifyLoginBtn.addEventListener('click', () => {
-            window.location.href = '/api/login';
-        });
-
-        playSelectedBtn.addEventListener('click', playPlaylist);
-
-
-        mainTitle.addEventListener('blur', () => {
-            if (mainTitle.textContent.trim() === '') {
-                mainTitle.textContent = 'YKS ZAMANI';
-            }
-        });
-
-
-        window.setLanguage = translateUI;
-        window.applyNewDurations = applyNewDurations;
-        window.changeBackground = changeBackground;
-
-
-        // Başlangıç ayarları
-        mainTitle.setAttribute('data-initial', 'true');
-        translateUI('tr');
-        updateTimerDisplay();
-        
-        // Başlangıçta lofi_v1.mp4'ü ayarla (ilk seçenek)
-        changeBackground(BACKGROUND_OPTIONS[0].file, BACKGROUND_OPTIONS[0].type, null); 
-        checkSpotifyToken(); 
-    </script>
-</body>
-</html>
+                    } else if (
