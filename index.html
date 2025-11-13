@@ -56,7 +56,7 @@
             padding: 50px;
             border-radius: 10px;
             text-align: center;
-            max-width: 500px; /* Masaüstü/Tablet Sınırı */
+            max-width: 500px; 
             width: 100%;
         }
 
@@ -127,7 +127,6 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); 
         }
 
-
         /* --- ZAMANLAYICI EKRANI --- */
         .timer {
             font-size: 9em; 
@@ -137,75 +136,68 @@
             color: #ffffff;
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
+        
+        /* --- AYARLAR PANELI VE ÖNİZLEME BUTONLARI İÇİN YENİ STİL --- */
 
-        /* --- KONTROL BUTONLARI --- */
-        .controls {
-            margin-top: 20px;
+        .bg-options {
+            /* Önizleme butonları yan yana hizalansın */
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap; /* Mobil için kaymayı sağla */
+            justify-content: flex-start;
         }
         
-        #start-btn, #pause-btn {
-            background-color: rgba(255, 255, 255, 0.25); 
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px; 
+        .bg-options button {
+            /* Butonu küçük kare önizleme haline getir */
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            min-height: 60px;
+            padding: 0; /* İç dolguyu sıfırla */
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             cursor: pointer;
-            font-size: 1.3em;
-            font-weight: 600;
-            transition: background-color 0.2s;
-            min-width: 150px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
+            transition: border-color 0.2s, transform 0.1s;
+            
+            /* İçindeki metni gizle */
+            font-size: 0; 
+            line-height: 0;
+            position: relative;
+        }
+        
+        .bg-options button.selected {
+            border-color: #1ed760; /* Yeşil çerçeve ile seçili olduğunu göster */
+            transform: scale(1.05);
         }
 
-        #pause-btn {
-             background-color: #e43f5a; 
-        }
-        
-        /* Sıfırla Butonu (Yenile Simgesi) */
-        #reset-btn {
-            background: none;
+        /* Video İkonu için özel sınıf */
+        .bg-options button.video-thumb::after {
+            content: "▶";
+            font-size: 24px;
             color: #ffffff;
-            border: none;
-            cursor: pointer;
-            font-size: 2.2em; 
-            padding: 5px;
-            transition: color 0.2s, transform 0.2s;
-            margin-left: 10px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* --- AYARLAR VE KONTROL TUŞLARI --- */
-
-        /* Sağ Alt Köşe Grubu */
-        .bottom-right-controls {
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
-            gap: 15px;
             align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Hafif gölge */
+            border-radius: 5px;
         }
         
-        .bottom-right-controls button, .bottom-right-controls a {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 1.8em;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-            padding: 0;
-            line-height: 1;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            text-decoration: none;
+        /* Düz Siyah için özel sınıf */
+        .bg-options button.black-thumb {
+            background-color: #000000;
         }
         
-        /* Ayarlar Paneli */
+        /* Ayarlar Paneli ve Müzik Paneli stilleri (Konumlandırma vb. önceki koddan korunmuştur) */
         #settings-panel {
             position: absolute;
             bottom: 60px; 
@@ -220,27 +212,7 @@
             display: none; 
             text-align: left; 
         }
-        .setting-group {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .time-setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .time-setting-item input {
-            width: 50px;
-            text-align: right;
-            padding: 5px;
-            font-size: 1em;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
 
-        /* --- MÜZİK PANELİ STİLİ (Spotify Kontrol) --- */
         #music-panel {
             position: absolute;
             bottom: 60px; 
@@ -262,21 +234,16 @@
 
         @media (max-width: 600px) {
             
-            /* Genel Görüntü Ayarları */
             body {
-                /* Telefonlarda kaydırmayı engellemek için gerekli olabilir */
                 overflow-y: auto; 
             }
 
             .container {
-                /* Telefon ekranının tamamını kullan */
                 padding: 20px;
                 max-width: 95%;
-                /* Zamanlayıcıyı biraz yukarı kaydır */
                 margin-top: 10vh; 
             }
             
-            /* Başlık ve Sözler Bölümü */
             .header-top {
                 top: 10px;
                 left: 15px;
@@ -286,74 +253,60 @@
                 font-size: 1.2em;
             }
             #quote {
-                /* Telefonlarda alıntı sözünü gizle, çünkü yer kaplıyor */
                 display: none; 
             }
             
-            /* Zamanlayıcı Ekranı */
             .timer {
-                /* Font boyutunu küçült */
                 font-size: 6em; 
             }
             
-            /* Mod Butonları */
             .modes {
                 margin-bottom: 20px; 
             }
             .modes button {
-                /* Buton metnini küçült */
                 font-size: 0.85em;
                 padding: 6px 10px;
             }
             
-            /* Kontrol Butonları (Başlat/Durdur/Sıfırla) */
             .controls {
                 gap: 10px;
             }
             #start-btn, #pause-btn {
-                /* Daha dar ve kısa yap */
                 padding: 12px 25px;
                 font-size: 1.1em;
                 min-width: 120px;
             }
-            #reset-btn {
-                font-size: 1.8em;
-                margin-left: 5px;
-            }
 
-            /* Alt Sağ Köşe Kontrolleri (Zil/Müzik/Ayarlar/Tam Ekran) */
             .bottom-right-controls {
-                /* Konumu koru ama butonu küçült */
                 bottom: 10px;
                 right: 10px;
                 gap: 10px;
             }
             .bottom-right-controls button, .bottom-right-controls a {
-                font-size: 1.5em; /* İkonları küçült */
+                font-size: 1.5em; 
             }
 
-            /* Ayarlar ve Müzik Panelleri */
+            /* Ayarlar ve Müzik Panelleri Mobil Konumlandırma */
             #settings-panel, #music-panel {
-                /* Tam ekran genişliğine getir */
                 width: 90%; 
                 left: 50%;
                 transform: translateX(-50%);
-                /* Sayfanın altına sabitle ve yukarı doğru uzat */
                 bottom: 50px; 
                 right: auto;
                 max-height: 80vh; 
-                overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
+                overflow-y: auto; 
             }
             
-            /* Ayarlar panelindeki input ve butonları mobil için düzenle */
-            .setting-group label, .time-setting-item label {
-                font-size: 1em; 
+            /* Mobil Arka Plan Önizlemeleri */
+            .bg-options {
+                justify-content: space-between; /* Butonları eşit dağıt */
             }
-            .lang-options button, .bg-options button {
-                 display: block;
-                 width: 100%;
-                 margin-right: 0;
-                 margin-bottom: 5px;
+            
+            .bg-options button {
+                width: 55px; /* Mobil için biraz daha küçük */
+                height: 55px;
+                min-width: 55px;
+                min-height: 55px;
             }
 
         } /* End of media query */
@@ -473,11 +426,11 @@
                 'reset_btn': 'SIFIRLA', 
                 'continue_btn': 'DEVAM ET',
                 'alert_message': 'Süre bitti! Yeni moda geçiliyor.',
-                'bg_focus': 'Odak Yolu (Resim)',
-                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', 
-                'bg_rain': 'Yağmur (Resim)',
-                'bg_forest': 'Orman (Resim)',
-                'bg_black': 'Siyah (Düz Renk)'
+                'bg_focus': 'Odak Yolu',
+                'bg_lofi_v1': 'Lofi Hip-Hop', 
+                'bg_rain': 'Yağmur',
+                'bg_forest': 'Orman',
+                'bg_black': 'Siyah'
             },
             'en': {
                 'doc_title': 'YKS Timer',
@@ -493,20 +446,21 @@
                 'reset_btn': 'RESET',
                 'continue_btn': 'RESUME',
                 'alert_message': 'Time\'s up! Switching mode.',
-                'bg_focus': 'Focus Path (Image)',
-                'bg_lofi_v1': 'Lofi Hip-Hop (Video)', 
-                'bg_rain': 'Rain (Image)',
-                'bg_forest': 'Forest (Image)',
-                'bg_black': 'Black (Solid Color)'
+                'bg_focus': 'Focus Path',
+                'bg_lofi_v1': 'Lofi Hip-Hop', 
+                'bg_rain': 'Rain',
+                'bg_forest': 'Forest',
+                'bg_black': 'Black'
             }
         };
 
         const BACKGROUND_OPTIONS = [
-            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video'}, 
-            { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image'},
-            { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image'},
-            { nameKey: 'bg_forest', file: 'assets/forest.jpg', type: 'image'},
-            { nameKey: 'bg_black', file: 'pure-black', type: 'color'}
+            // type: 'video' için, thumbnail olarak video'dan ayrı bir resim kullanmadığımız için ilk resmi verdim.
+            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: 'assets/focus-bg.jpg'}, 
+            { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/focus-bg.jpg'},
+            { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/rain.jpg'},
+            { nameKey: 'bg_forest', file: 'assets/forest.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/forest.jpg'},
+            { nameKey: 'bg_black', file: 'pure-black', type: 'color', thumbClass: 'black-thumb', thumbFile: ''}
         ];
 
         // --- DOM Elementleri ve Değişken Tanımlamaları ---
@@ -701,7 +655,7 @@
             document.getElementById(`lang-${lang}-btn`).classList.add('selected');
 
             currentLanguage = lang;
-            renderBackgroundOptions();
+            // renderBackgroundOptions(); // Bu çağrıyı aşağıda yapıyoruz, aksi halde butonlar kaybolabilir.
         }
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
@@ -834,17 +788,45 @@
             }
         }
 
+        // GÜNCELLENMİŞ ARKA PLAN BUTONU OLUŞTURUCU
         function renderBackgroundOptions() {
             bgOptionsContainer.innerHTML = '';
+            
+            // Hangi arka planın aktif olduğunu bulmak için, body'nin mevcut stilini kontrol ediyoruz.
+            const currentBg = videoElement.style.display === 'block' 
+                ? 'assets/lofi_v1.mp4' 
+                : (document.body.style.backgroundImage.includes('none') ? 'pure-black' : document.body.style.backgroundImage.replace(/url\(['"]?|['"]?\)/g, '').trim());
+
+
             BACKGROUND_OPTIONS.forEach(option => {
                 const button = document.createElement('button');
-                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
+                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey]; // Görünmeyecek olsa da erişilebilirlik için metin kalsın
                 
+                // 1. Thumbnail Resmi / Rengi Ayarla
+                if (option.thumbFile) {
+                    button.style.backgroundImage = `url('${option.thumbFile}')`;
+                }
+                if (option.thumbClass) {
+                    button.classList.add(option.thumbClass);
+                }
+                
+                // 2. Olay Dinleyicisini Ayarla
                 button.onclick = () => changeBackground(option.file, option.type, button);
                 
-                if (option.file === BACKGROUND_OPTIONS[0].file) {
+                // 3. Seçili Olanı Belirle (Başlangıçta/Ayarlar açıldığında)
+                let isSelected = false;
+                if (option.type === 'video' && videoElement.style.display === 'block') {
+                    isSelected = true;
+                } else if (option.type === 'color' && document.body.style.backgroundImage.includes('none') && document.body.style.backgroundColor === 'rgb(0, 0, 0)') {
+                    isSelected = true;
+                } else if (option.type === 'image' && document.body.style.backgroundImage.includes(option.file)) {
+                    isSelected = true;
+                }
+                
+                if (isSelected) {
                      button.classList.add('selected');
                 }
+                
                 bgOptionsContainer.appendChild(button);
             });
         }
@@ -864,7 +846,7 @@
                 shortBreakInput.value = SHORT_BREAK_DURATION / 60;
                 longBreakInput.value = LONG_BREAK_DURATION / 60;
                 
-                renderBackgroundOptions();
+                renderBackgroundOptions(); // Ayarlar açıldığında önizlemeleri yükle
                 settingsPanel.style.display = 'block';
             }
         });
@@ -929,7 +911,8 @@
         translateUI('tr');
         updateTimerDisplay();
         
-        changeBackground(BACKGROUND_OPTIONS[0].file, BACKGROUND_OPTIONS[0].type); 
+        // Başlangıçta lofi_v1.mp4'ü ayarla (ilk seçenek)
+        changeBackground(BACKGROUND_OPTIONS[0].file, BACKGROUND_OPTIONS[0].type, null); 
         checkSpotifyToken(); 
     </script>
 </body>
