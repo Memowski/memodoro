@@ -138,7 +138,7 @@
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
 
-        /* --- YENİ MERKEZİ KONTROL ALANI (SAYAÇ ALTI) --- */
+        /* --- MERKEZİ KONTROL ALANI (SAYAÇ ALTI) --- */
         .timer-controls {
             margin-top: 40px; /* Sayaç ile butonlar arası boşluk */
             display: flex;
@@ -239,7 +239,7 @@
             text-align: left; 
         }
 
-        /* --- ARKA PLAN ÖNİZLEME STİLİ --- (Kısaltıldı) */
+        /* --- ARKA PLAN ÖNİZLEME STİLİ --- */
         .bg-options {
             display: flex;
             gap: 10px;
@@ -254,6 +254,32 @@
             font-size: 0; line-height: 0; position: relative;
         }
         .bg-options button.selected { border-color: #1ed760; transform: scale(1.05); }
+        
+        /* YENİ EKLEME: Video butonu için koyu arka plan */
+        .bg-options button.video-thumb {
+            background-color: #333333; 
+        }
+
+        .bg-options button.video-thumb::after {
+            content: "▶";
+            font-size: 24px;
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); 
+            border-radius: 5px;
+        }
+        .bg-options button.black-thumb {
+            background-color: #000000;
+        }
 
 
         /* ================================================= */
@@ -452,7 +478,8 @@
         };
 
         const BACKGROUND_OPTIONS = [
-            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: 'assets/focus-bg.jpg'}, 
+            // DÜZELTME: Video için statik önizleme resmi kaldırıldı, sadece play simgesi kalacak
+            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: ''}, 
             { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/focus-bg.jpg'},
             { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/rain.jpg'},
             { nameKey: 'bg_forest', file: 'assets/forest.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/forest.jpg'},
