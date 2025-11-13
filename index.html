@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title id="doc-title">YKS Zamanlayıcısı</title>
     
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    
     <style>
         /* Yeni: Sayfa Geçiş Animasyonu CSS'i */
         @keyframes fadeIn {
@@ -59,6 +61,37 @@
             max-width: 500px; 
             width: 100%;
             padding-bottom: 20px; 
+        }
+
+        /* AdSense Konteyner Stili (Sol Köşe) */
+        #adsense-left-container {
+            position: fixed; /* Sabit konumlandırma */
+            top: 100px; /* Başlıktan biraz aşağıda */
+            left: 20px;
+            z-index: 90; /* İçeriğin üzerinde, arka planın altında */
+            pointer-events: all;
+            max-width: 300px; /* Maksimum genişlik */
+            width: 100%;
+            /* Reklamın görünürlüğünü artırmak için hafif bir arka plan */
+            background: rgba(30, 30, 30, 0.7); 
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px); /* Hafif bulanıklık */
+        }
+        
+        #ad-unit-placeholder {
+            width: 100%;
+            height: 250px; /* Örnek yükseklik */
+            background-color: rgba(255, 255, 255, 0.1); 
+            border: 1px dashed rgba(255, 255, 255, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            font-size: 0.9em;
+            text-align: center;
         }
 
         /* --- BAŞLIK VE SÖZLER --- */
@@ -270,6 +303,11 @@
             body {
                 overflow-y: auto; 
             }
+            
+            /* AdSense'i mobil görünümde gizle */
+            #adsense-left-container {
+                display: none;
+            }
 
             .container {
                 padding: 20px;
@@ -315,6 +353,9 @@
 
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     
@@ -322,6 +363,13 @@
         <source src="assets/lofi_v1.mp4" type="video/mp4" id="video-source">
         Tarayıcınız video etiketini desteklemiyor.
     </video>
+    
+    <div id="adsense-left-container">
+        <div id="ad-unit-placeholder">
+            [Google AdSense Reklam Alanı 300x250]
+            <br><small style="font-size: 0.7em;">(Kendi AdSense kodunuzla değiştirin)</small>
+        </div>
+        </div>
 
     <div class="header-top">
         <div id="app-logo">memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span></div>
@@ -457,7 +505,7 @@
         };
 
         const BACKGROUND_OPTIONS = [
-            // GÜNCELLEME YAPILDI: Video için önizleme dosyası 'assets/dappy.jpg' olarak değiştirildi.
+            // Video için önizleme dosyası 'assets/dappy.jpg'
             { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: 'assets/dappy.jpg'}, 
             { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/focus-bg.jpg'},
             { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/rain.jpg'},
