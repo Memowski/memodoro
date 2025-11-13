@@ -58,7 +58,6 @@
             text-align: center;
             max-width: 500px; 
             width: 100%;
-            /* Ana butonlar burdan taşındığı için padding'i küçültüyoruz */
             padding-bottom: 20px; 
         }
 
@@ -139,35 +138,16 @@
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
 
-        /* --- YENİ SAĞ ALT KÖŞE TÜM KONTROLLER ALANI --- */
-        #all-controls-area {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+        /* --- YENİ MERKEZİ KONTROL ALANI (SAYAÇ ALTI) --- */
+        .timer-controls {
+            margin-top: 40px; /* Sayaç ile butonlar arası boşluk */
             display: flex;
-            flex-direction: column; /* Buton gruplarını dikey hizala */
-            align-items: flex-end; /* İçindeki öğeleri sağa yasla */
-            gap: 15px; /* İki grup arasındaki boşluk */
-            z-index: 100;
-        }
-        
-        /* Ana Kontrol Butonları Grubu (Başlat/Sıfırla) */
-        .main-controls-group {
-            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 15px; 
-            pointer-events: all; 
+            gap: 20px; 
         }
-        
-        /* İkon Kontrol Butonları Grubu */
-        .icon-controls-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            pointer-events: all;
-        }
-        
-        /* Ana Buton Stilleri */
+
+        /* Ana Buton Stilleri (Başlat/Durdur) */
         #start-btn, #pause-btn {
             background-color: rgba(255, 255, 255, 0.25); 
             color: white;
@@ -197,13 +177,25 @@
             font-size: 2.2em; 
             padding: 5px;
             transition: color 0.2s, transform 0.2s;
-            margin-left: 10px;
+            margin: 0; 
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             pointer-events: all;
         }
         
+        /* --- SAĞ ALT KÖŞE İKON KONTROLLERİ --- */
+        .bottom-right-icons-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 100;
+            pointer-events: all;
+        }
+        
         /* İkon Butonları Stilleri */
-        .icon-controls-group button, .icon-controls-group a {
+        .bottom-right-icons-container button, .bottom-right-icons-container a {
             background: none;
             border: none;
             color: #ffffff;
@@ -217,10 +209,10 @@
             text-decoration: none;
         }
         
-        /* Ayarlar Paneli ve Müzik Paneli konumu (Sağ alt köşe butonlarına göre ayarlandı) */
+        /* Ayarlar Paneli ve Müzik Paneli konumu */
         #settings-panel {
             position: absolute;
-            bottom: 110px; /* İkon grubu + ana buton grubunun yukarısında */
+            bottom: 60px; /* İkon grubunun yukarısında */
             right: 20px;
             width: 300px; 
             background: rgba(30, 30, 30, 0.9); 
@@ -234,7 +226,7 @@
         }
         #music-panel {
             position: absolute;
-            bottom: 110px; 
+            bottom: 60px; 
             right: 80px; 
             width: 300px; 
             background: rgba(30, 30, 30, 0.95); 
@@ -247,7 +239,7 @@
             text-align: left; 
         }
 
-        /* --- ARKA PLAN ÖNİZLEME STİLİ --- */
+        /* --- ARKA PLAN ÖNİZLEME STİLİ --- (Kısaltıldı) */
         .bg-options {
             display: flex;
             gap: 10px;
@@ -255,46 +247,13 @@
             justify-content: flex-start;
         }
         .bg-options button {
-            width: 60px;
-            height: 60px;
-            min-width: 60px;
-            min-height: 60px;
-            padding: 0;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            transition: border-color 0.2s, transform 0.1s;
-            font-size: 0; 
-            line-height: 0;
-            position: relative;
+            width: 60px; height: 60px; min-width: 60px; min-height: 60px;
+            padding: 0; border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; background-size: cover; background-position: center;
+            cursor: pointer; transition: border-color 0.2s, transform 0.1s;
+            font-size: 0; line-height: 0; position: relative;
         }
-        .bg-options button.selected {
-            border-color: #1ed760; 
-            transform: scale(1.05);
-        }
-        .bg-options button.video-thumb::after {
-            content: "▶";
-            font-size: 24px;
-            color: #ffffff;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3); 
-            border-radius: 5px;
-        }
-        .bg-options button.black-thumb {
-            background-color: #000000;
-        }
+        .bg-options button.selected { border-color: #1ed760; transform: scale(1.05); }
 
 
         /* ================================================= */
@@ -317,13 +276,6 @@
                 font-size: 6em; 
             }
             
-            /* Tüm Kontrol Alanı Mobil Konumlandırma */
-            #all-controls-area {
-                bottom: 10px;
-                right: 10px;
-                gap: 10px;
-            }
-            
             /* Ana Butonlar Mobil Stil */
             #start-btn, #pause-btn {
                 padding: 12px 25px;
@@ -334,11 +286,13 @@
                 font-size: 1.8em;
             }
 
-            /* İkon Butonları Mobil Stil */
-            .icon-controls-group {
+            /* İkon Kontrolleri Mobil Konumlandırma */
+            .bottom-right-icons-container {
+                bottom: 10px;
+                right: 10px;
                 gap: 10px;
             }
-            .icon-controls-group button, .icon-controls-group a {
+            .bottom-right-icons-container button, .bottom-right-icons-container a {
                 font-size: 1.5em; 
             }
 
@@ -347,20 +301,11 @@
                 width: 90%; 
                 left: 50%;
                 transform: translateX(-50%);
-                bottom: 80px; /* Ana butonların yukarısında kalması için daha az kaydırıldı */
+                bottom: 50px; /* İkonların yukarısında kalması için */
                 right: auto;
                 max-height: 80vh; 
                 overflow-y: auto; 
             }
-            
-            /* Mobil Arka Plan Önizlemeleri */
-            .bg-options button {
-                width: 55px; 
-                height: 55px;
-                min-width: 55px;
-                min-height: 55px;
-            }
-
         } /* End of media query */
 
     </style>
@@ -378,18 +323,12 @@
         <div id="quote">"Sometimes you win, <br> sometimes you learn"</div>
     </div>
     
-    <div id="all-controls-area">
-        <div class="main-controls-group">
-            <button id="start-btn" data-key="start_btn">BAŞLAT</button>
-            <button id="reset-btn" data-key="reset_btn">↻</button> 
-        </div>
-        <div class="icon-controls-group">
-            <button id="sound-toggle-btn" title="Zil Sesini Kapat">🔔</button>
-            <a id="download-btn" href="download.html" title="Uygulamayı İndir">⬇️</a>
-            <button id="music-btn" title="Spotify Müzik">🎵</button>
-            <button id="fullscreen-btn" title="Tam Ekran Yap">⛶</button>
-            <button id="menu-btn" title="Ayarlar">⚙️</button>
-        </div>
+    <div class="bottom-right-icons-container">
+        <button id="sound-toggle-btn" title="Zil Sesini Kapat">🔔</button>
+        <a id="download-btn" href="download.html" title="Uygulamayı İndir">⬇️</a>
+        <button id="music-btn" title="Spotify Müzik">🎵</button>
+        <button id="fullscreen-btn" title="Tam Ekran Yap">⛶</button>
+        <button id="menu-btn" title="Ayarlar">⚙️</button>
     </div>
 
     <div id="music-panel">
@@ -459,6 +398,11 @@
         </div>
         
         <div id="timer" class="timer">25:00</div>
+        
+        <div class="timer-controls">
+            <button id="start-btn" data-key="start_btn">BAŞLAT</button>
+            <button id="reset-btn" data-key="reset_btn">↻</button> 
+        </div>
         
     </div>
     
@@ -544,7 +488,7 @@
         const longBreakInput = document.getElementById('long-break-input');
         const videoElement = document.getElementById('background-video'); 
         const videoSource = document.getElementById('video-source'); 
-        const mainControlsGroup = document.querySelector('.main-controls-group'); // Yeni eklenen ana kontrol grubu
+        const timerControlsDiv = document.querySelector('.timer-controls'); // Yeni kontrol grubu
 
         
         let POMODORO_DURATION = 25 * 60;
@@ -576,6 +520,7 @@
         async function fetchPlaylists(token) {
             spotifyStatus.textContent = "Çalma listeleri yükleniyor...";
             try {
+                // Bu URL Spotify API'si değil, örnek bir API yanıtıdır
                 const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=5', {
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -709,7 +654,6 @@
             document.getElementById(`lang-${lang}-btn`).classList.add('selected');
 
             currentLanguage = lang;
-            // renderBackgroundOptions() burdan kaldırıldı, sadece ayarlar açıldığında yüklenecek.
         }
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
@@ -727,9 +671,10 @@
             if (isRunning) return; 
 
             isRunning = true;
+            
             // Butonları değiştirmek için yeni ebeveyni kullan
             if (!pauseBtn.parentElement) {
-                 mainControlsGroup.replaceChild(pauseBtn, startBtn); 
+                 timerControlsDiv.replaceChild(pauseBtn, startBtn); 
             }
             pauseBtn.textContent = TRANSLATIONS[currentLanguage].pause_btn;
 
@@ -764,7 +709,7 @@
             
             // Butonları değiştirmek için yeni ebeveyni kullan
             if(pauseBtn.parentElement) {
-                mainControlsGroup.replaceChild(startBtn, pauseBtn); 
+                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
             }
             startBtn.textContent = TRANSLATIONS[currentLanguage].continue_btn;
         }
@@ -772,7 +717,7 @@
             pauseTimer(); 
             // Butonları değiştirmek için yeni ebeveyni kullan
             if(pauseBtn.parentElement) {
-                mainControlsGroup.replaceChild(startBtn, pauseBtn); 
+                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
             }
             startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
             
@@ -848,10 +793,9 @@
         function renderBackgroundOptions() {
             bgOptionsContainer.innerHTML = '';
             
-            const currentBg = videoElement.style.display === 'block' 
-                ? 'assets/lofi_v1.mp4' 
-                : (document.body.style.backgroundImage.includes('none') ? 'pure-black' : document.body.style.backgroundImage.replace(/url\(['"]?|['"]?\)/g, '').trim());
-
+            // Seçili arka planı belirlemek için bir kontrol mekanizması
+            const isVideoActive = videoElement.style.display === 'block';
+            const isBlackActive = !isVideoActive && document.body.style.backgroundImage.includes('none') && document.body.style.backgroundColor === 'rgb(0, 0, 0)';
 
             BACKGROUND_OPTIONS.forEach(option => {
                 const button = document.createElement('button');
@@ -867,9 +811,9 @@
                 button.onclick = () => changeBackground(option.file, option.type, button);
                 
                 let isSelected = false;
-                if (option.type === 'video' && videoElement.style.display === 'block') {
+                if (option.type === 'video' && isVideoActive) {
                     isSelected = true;
-                } else if (option.type === 'color' && document.body.style.backgroundImage.includes('none') && document.body.style.backgroundColor === 'rgb(0, 0, 0)') {
+                } else if (option.type === 'color' && isBlackActive) {
                     isSelected = true;
                 } else if (option.type === 'image' && document.body.style.backgroundImage.includes(option.file)) {
                     isSelected = true;
