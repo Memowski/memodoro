@@ -2,8 +2,10 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title id="doc-title">YKS Zamanlayıcısı</title>
+    
+    <link rel="icon" type="image/png" href="assets/logo.png">
     
     <style>
         /* Yeni: Sayfa Geçiş Animasyonu CSS'i */
@@ -22,11 +24,11 @@
             width: 100vw; 
             margin: 0;
             color: #ffffff; 
-            transition: background-image 0.5s ease-in-out; 
+            transition: background-image 0.5s ease-in-out, background-color 0.5s; 
             overflow: hidden; 
             
-            /* Lütfen 'focus-bg.jpg' dosyasının klasörde olduğundan emin olun */
-            background-image: url('focus-bg.jpg'); 
+            /* Başlangıç Statik Arkaplan Ayarları */
+            background-image: url('assets/focus-bg.jpg'); 
             background-size: cover; 
             background-attachment: fixed;
             background-repeat: no-repeat;
@@ -34,7 +36,21 @@
             background-blend-mode: overlay;
             background-color: rgba(0, 0, 0, 0.3);
             
-            animation: fadeIn 0.8s ease-out; /* Animasyonu uygula */
+            animation: fadeIn 0.8s ease-out; 
+        }
+
+        /* VİDEO ARKA PLAN STİLİ */
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -101; 
+            object-fit: cover; 
+            transition: opacity 0.5s;
         }
 
         .container {
@@ -42,12 +58,12 @@
             padding: 50px;
             border-radius: 10px;
             text-align: center;
-            max-width: 500px;
+            max-width: 500px; 
             width: 100%;
+            padding-bottom: 20px; 
         }
 
         /* --- BAŞLIK VE SÖZLER --- */
-
         .header-top {
             position: absolute;
             top: 20px;
@@ -66,6 +82,23 @@
             letter-spacing: 2px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
             pointer-events: all;
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        #app-logo img {
+            height: 1.5em; 
+            width: auto;
+        }
+        
+        #app-logo > span {
+            font-size: 0.5em; 
+            font-weight: 400; 
+            display: block; 
+            letter-spacing: 0;
+            line-height: 1; 
+            margin-top: 3px; 
         }
 
         #quote {
@@ -113,10 +146,6 @@
             color: white;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); 
         }
-        .modes button:not(.active):hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
 
         /* --- ZAMANLAYICI EKRANI --- */
         .timer {
@@ -128,33 +157,16 @@
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
 
-        /* Süre Input Stili */
-        .time-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 10px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 1em;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
-        .time-input::placeholder {
-            color: #ccc;
-        }
-
-
-        /* --- KONTROL BUTONLARI --- */
-        .controls {
-            margin-top: 20px;
+        /* --- MERKEZİ KONTROL ALANI (SAYAÇ ALTI) --- */
+        .timer-controls {
+            margin-top: 40px; 
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 20px; 
         }
-        
+
+        /* Ana Buton Stilleri (Başlat/Durdur) */
         #start-btn, #pause-btn {
             background-color: rgba(255, 255, 255, 0.25); 
             color: white;
@@ -168,15 +180,11 @@
             min-width: 150px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
+            pointer-events: all;
         }
 
         #pause-btn {
              background-color: #e43f5a; 
-        }
-
-        #start-btn:hover, #pause-btn:hover {
-            opacity: 0.9;
-            background-color: rgba(255, 255, 255, 0.4);
         }
         
         /* Sıfırla Butonu (Yenile Simgesi) */
@@ -188,28 +196,25 @@
             font-size: 2.2em; 
             padding: 5px;
             transition: color 0.2s, transform 0.2s;
-            margin-left: 10px;
+            margin: 0; 
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            pointer-events: all;
         }
         
-        #reset-btn:hover {
-            color: #d1b4e0;
-            transform: rotate(90deg);
-        }
-        
-        /* --- AYARLAR VE TAM EKRAN TUŞLARI --- */
-
-        /* Sağ Alt Köşe Grubu */
-        .bottom-right-controls {
+        /* --- SAĞ ALT KÖŞE İKON KONTROLLERİ --- */
+        .bottom-right-icons-container {
             position: absolute;
             bottom: 20px;
             right: 20px;
             display: flex;
             gap: 15px;
             align-items: center;
+            z-index: 100;
+            pointer-events: all;
         }
         
-        .bottom-right-controls button, .bottom-right-controls a {
+        /* İkon Butonları Stilleri */
+        .bottom-right-icons-container button, .bottom-right-icons-container a {
             background: none;
             border: none;
             color: #ffffff;
@@ -223,11 +228,7 @@
             text-decoration: none;
         }
         
-        .bottom-right-controls button:hover, .bottom-right-controls a:hover {
-            opacity: 1;
-        }
-        
-        /* Ayarlar Paneli */
+        /* Ayarlar Paneli ve Müzik Paneli konumu */
         #settings-panel {
             position: absolute;
             bottom: 60px; 
@@ -242,64 +243,6 @@
             display: none; 
             text-align: left; 
         }
-        .setting-group {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .setting-group:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .setting-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #d1b4e0;
-        }
-        .lang-options button, .bg-options button {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            margin-right: 5px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 0.9em;
-        }
-        .lang-options button.selected, .bg-options button.selected {
-            background: #e43f5a;
-        }
-        .lang-options button:hover, .bg-options button:not(.selected):hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Süre Inputları için özel stil */
-        .time-setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .time-setting-item label {
-            width: 45%;
-            margin-bottom: 0;
-            font-size: 0.9em;
-            font-weight: 400;
-            color: #ffffff;
-        }
-        .time-setting-item input {
-            width: 50px;
-            text-align: right;
-            padding: 5px;
-            font-size: 1em;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* --- MÜZİK PANELİ STİLİ --- */
         #music-panel {
             position: absolute;
             bottom: 60px; 
@@ -312,9 +255,10 @@
             padding: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             z-index: 99;
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             text-align: left; 
         }
+        /* Müzik Paneli Başlık ve Kapat */
         #music-header {
             display: flex;
             justify-content: space-between;
@@ -323,38 +267,104 @@
             padding-bottom: 5px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        #music-title {
-            font-weight: 600;
-            color: #1ed760; /* Spotify Yeşili */
-        }
-        #close-music-btn {
-            background: none;
-            border: none;
-            color: white;
-            opacity: 0.7;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: opacity 0.2s;
-        }
-        #close-music-btn:hover {
-            opacity: 1;
-        }
         #music-panel iframe {
             border-radius: 8px;
             display: block;
         }
+
+        /* --- ARKA PLAN ÖNİZLEME STİLİ --- */
+        .bg-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap; 
+            justify-content: flex-start;
+        }
+        .bg-options button {
+            width: 60px; height: 60px; min-width: 60px; min-height: 60px;
+            padding: 0; border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; background-size: cover; background-position: center;
+            cursor: pointer; transition: border-color 0.2s, transform 0.1s;
+            font-size: 0; line-height: 0; position: relative;
+        }
+        .bg-options button.selected { border-color: #1ed760; transform: scale(1.05); }
+        
+        /* Sadece siyah arka plan için */
+        .bg-options button.black-thumb {
+            background-color: #000000;
+        }
+
+        /* ================================================= */
+        /* MOBİL OPTİMİZASYON (MEDIA QUERY)         */
+        /* ================================================= */
+
+        @media (max-width: 600px) {
+            
+            body {
+                overflow-y: auto; 
+            }
+            
+            .container {
+                padding: 20px;
+                max-width: 95%;
+                margin-top: 10vh; 
+            }
+            
+            .timer {
+                font-size: 6em; 
+            }
+            
+            /* Ana Butonlar Mobil Stil */
+            #start-btn, #pause-btn {
+                padding: 12px 25px;
+                font-size: 1.1em;
+                min-width: 120px;
+            }
+            #reset-btn {
+                font-size: 1.8em;
+            }
+
+            /* İkon Kontrolleri Mobil Konumlandırma */
+            .bottom-right-icons-container {
+                bottom: 10px;
+                right: 10px;
+                gap: 10px;
+            }
+            .bottom-right-icons-container button, .bottom-right-icons-container a {
+                font-size: 1.5em; 
+            }
+
+            /* Ayarlar ve Müzik Panelleri Mobil Konumlandırma */
+            #settings-panel, #music-panel {
+                width: 90%; 
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 50px; 
+                right: auto;
+                max-height: 80vh; 
+                overflow-y: auto; 
+            }
+        } /* End of media query */
 
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     
+    <video autoplay muted loop id="background-video" style="display:none;">
+        <source src="assets/lofi_v1.mp4" type="video/mp4" id="video-source">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+
     <div class="header-top">
-        <div id="app-logo">memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span></div>
+        <div id="app-logo">
+            <img src="assets/logo.png" alt="Memodoro Logo"> 
+            memodoro<span style="font-size:0.5em; font-weight: 400; display: block; letter-spacing: 0;">by Mehmet Özalp</span>
+        </div>
         <div id="quote">"Sometimes you win, <br> sometimes you learn"</div>
     </div>
     
-    <div class="bottom-right-controls">
+    <div class="bottom-right-icons-container">
+        <button id="sound-toggle-btn" title="Zil Sesini Kapat">🔔</button>
         <a id="download-btn" href="download.html" title="Uygulamayı İndir">⬇️</a>
         <button id="music-btn" title="Müzik Oynatıcı">🎵</button>
         <button id="fullscreen-btn" title="Tam Ekran Yap">⛶</button>
@@ -374,7 +384,6 @@
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                 loading="lazy">
         </iframe>
-        
     </div>
 
     <div id="settings-panel">
@@ -393,15 +402,15 @@
             <div style="display: flex; flex-direction: column;">
                  <div class="time-setting-item">
                      <label>Çalışma Süresi:</label>
-                     <input type="number" id="pomodoro-input" class="time-input" placeholder="25" min="1">
+                     <input type="number" id="pomodoro-input" class="time-input" placeholder="25" value="25" min="1">
                  </div>
                  <div class="time-setting-item">
                      <label>Kısa Mola Süresi:</label>
-                     <input type="number" id="short-break-input" class="time-input" placeholder="5" min="1">
+                     <input type="number" id="short-break-input" class="time-input" placeholder="5" value="5" min="1">
                  </div>
                  <div class="time-setting-item">
                      <label>Uzun Mola Süresi:</label>
-                     <input type="number" id="long-break-input" class="time-input" placeholder="15" min="1">
+                     <input type="number" id="long-break-input" class="time-input" placeholder="15" value="15" min="1">
                  </div>
                  <button onclick="applyNewDurations()" style="margin-top: 10px; background: #6841b8; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">Uygula</button>
             </div>
@@ -424,8 +433,8 @@
         </div>
         
         <div id="timer" class="timer">25:00</div>
-
-        <div class="controls">
+        
+        <div class="timer-controls">
             <button id="start-btn" data-key="start_btn">BAŞLAT</button>
             <button id="reset-btn" data-key="reset_btn">↻</button> 
         </div>
@@ -433,7 +442,7 @@
     </div>
     
     <script>
-        // --- DİL SÖZLÜĞÜ ---
+        // --- DİL SÖZLÜĞÜ VE GÖRSEL VERİLERİ ---
         const TRANSLATIONS = {
             'tr': {
                 'doc_title': 'YKS Zamanlayıcısı', 
@@ -450,6 +459,7 @@
                 'continue_btn': 'DEVAM ET',
                 'alert_message': 'Süre bitti! Yeni moda geçiliyor.',
                 'bg_focus': 'Odak Yolu',
+                'bg_lofi_v1': 'Lofi Hip-Hop', 
                 'bg_rain': 'Yağmur',
                 'bg_forest': 'Orman',
                 'bg_black': 'Siyah'
@@ -469,68 +479,67 @@
                 'continue_btn': 'RESUME',
                 'alert_message': 'Time\'s up! Switching mode.',
                 'bg_focus': 'Focus Path',
+                'bg_lofi_v1': 'Lofi Hip-Hop', 
                 'bg_rain': 'Rain',
                 'bg_forest': 'Forest',
                 'bg_black': 'Black'
             }
         };
 
-        // --- GÖRSEL VERİLERİ ---
         const BACKGROUND_OPTIONS = [
-            { nameKey: 'bg_focus', file: 'focus-bg.jpg'},
-            { nameKey: 'bg_rain', file: 'rain.jpg'},
-            { nameKey: 'bg_forest', file: 'forest.jpg'},
-            { nameKey: 'bg_black', file: 'pure-black'}
+            { nameKey: 'bg_lofi_v1', file: 'assets/lofi_v1.mp4', type: 'video', thumbClass: 'video-thumb', thumbFile: 'assets/dappy.jpg'}, 
+            { nameKey: 'bg_focus', file: 'assets/focus-bg.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/focus-bg.jpg'},
+            { nameKey: 'bg_rain', file: 'assets/rain.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/rain.jpg'},
+            { nameKey: 'bg_forest', file: 'assets/forest.jpg', type: 'image', thumbClass: '', thumbFile: 'assets/forest.jpg'},
+            { nameKey: 'bg_black', file: 'pure-black', type: 'color', thumbClass: 'black-thumb', thumbFile: ''}
         ];
 
-        // --- DOM Elementleri ---
+        // --- DOM Elementleri ve Değişken Tanımlamaları ---
         const timerDisplay = document.getElementById('timer');
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.createElement('button'); 
         pauseBtn.id = 'pause-btn';
         pauseBtn.setAttribute('data-key', 'pause_btn');
-
         const resetBtn = document.getElementById('reset-btn');
         const pomodoroBtn = document.getElementById('pomodoro-btn');
         const shortBreakBtn = document.getElementById('short-break-btn');
         const longBreakBtn = document.getElementById('long-break-btn'); 
         const mainTitle = document.getElementById('main-title'); 
-
         const menuBtn = document.getElementById('menu-btn');
         const settingsPanel = document.getElementById('settings-panel');
         const bgOptionsContainer = document.getElementById('bg-options-container');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
-        
         const musicBtn = document.getElementById('music-btn');
         const musicPanel = document.getElementById('music-panel');
         const closeMusicBtn = document.getElementById('close-music-btn');
-
-
-        // Sabitler ve Değişkenler
-        let POMODORO_DURATION = 25 * 60;
-        let SHORT_BREAK_DURATION = 5 * 60; 
-        let LONG_BREAK_DURATION = 15 * 60; 
-        let currentLanguage = 'tr'; 
-
-        let currentDuration = POMODORO_DURATION;
-        let isRunning = false;
-        let interval;
-        let timeRemaining = currentDuration;
+        const soundToggleBtn = document.getElementById('sound-toggle-btn'); 
         
-        // Input Elementleri
+        const videoElement = document.getElementById('background-video'); 
+        const videoSource = document.getElementById('video-source'); 
+        const timerControlsDiv = document.querySelector('.timer-controls'); 
+        
         const pomodoroInput = document.getElementById('pomodoro-input');
         const shortBreakInput = document.getElementById('short-break-input');
         const longBreakInput = document.getElementById('long-break-input');
 
-
+        
+        let POMODORO_DURATION = 25 * 60;
+        let SHORT_BREAK_DURATION = 5 * 60; 
+        let LONG_BREAK_DURATION = 15 * 60; 
+        let currentLanguage = 'tr'; 
+        let currentDuration = POMODORO_DURATION;
+        let isRunning = false;
+        let interval;
+        let timeRemaining = currentDuration;
+        let isSoundOn = true; 
+        const dingSound = new Audio('assets/ding.mp3'); 
+        
         // --- SÜRE AYARLAMA İŞLEVİ ---
         function applyNewDurations() {
-            // Sadece sayısal ve pozitif değerleri kabul et
             const newPomodoro = Math.max(1, parseInt(pomodoroInput.value) || 25);
             const newShort = Math.max(1, parseInt(shortBreakInput.value) || 5);
             const newLong = Math.max(1, parseInt(longBreakInput.value) || 15);
             
-            // Inputları temizle ve varsayılanları kaydet
             pomodoroInput.value = newPomodoro;
             shortBreakInput.value = newShort;
             longBreakInput.value = newLong;
@@ -539,7 +548,6 @@
             SHORT_BREAK_DURATION = newShort * 60;
             LONG_BREAK_DURATION = newLong * 60;
 
-            // Eğer zamanlayıcı aktif değilse, mevcut modu yeni süreyle güncelle
             if (!isRunning) {
                 if (pomodoroBtn.classList.contains('active')) {
                     currentDuration = POMODORO_DURATION;
@@ -554,19 +562,16 @@
             alert('Yeni süreler başarıyla uygulandı!');
         }
 
-
         // --- DİL VE ÇEVİRİ İŞLEVLERİ ---
         function translateUI(lang) {
             const texts = TRANSLATIONS[lang];
             
             document.getElementById('doc-title').textContent = texts.doc_title;
             
-            // Başlığı sadece ilk yüklemede veya dil değiştiğinde günceller
             if (mainTitle.getAttribute('data-initial') === 'true') {
                  mainTitle.textContent = texts.main_title;
                  mainTitle.removeAttribute('data-initial');
             } else if (currentLanguage !== lang) {
-                 // Dil değiştiğinde, sadece varsayılan başlık kullanılıyorsa çevir
                  const currentDefault = currentLanguage === 'tr' ? 'YKS ZAMANI' : 'YKS TIME';
                  if (mainTitle.textContent.trim() === currentDefault) {
                      mainTitle.textContent = texts.main_title;
@@ -601,7 +606,6 @@
         }
         
         // --- ZAMANLAYICI İŞLEVLERİ ---
-
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -616,8 +620,9 @@
             if (isRunning) return; 
 
             isRunning = true;
+            
             if (!pauseBtn.parentElement) {
-                 startBtn.parentElement.replaceChild(pauseBtn, startBtn); 
+                 timerControlsDiv.replaceChild(pauseBtn, startBtn); 
             }
             pauseBtn.textContent = TRANSLATIONS[currentLanguage].pause_btn;
 
@@ -628,20 +633,16 @@
                     clearInterval(interval);
                     isRunning = false;
                     
-                    // Zil sesi çalma fonksiyonu burada olmalıdır.
+                    if (isSoundOn) {
+                        dingSound.play();
+                        dingSound.currentTime = 0;
+                    }
                     
-                    if (currentDuration === POMODORO_DURATION) {
+                    if (pomodoroBtn.classList.contains('active')) {
                         switchMode(SHORT_BREAK_DURATION, shortBreakBtn);
                         startTimer();
-                    } else if (currentDuration === SHORT_BREAK_DURATION) {
-                        // Basitçe: Eğer kısa moladaysak, tekrar çalışma moduna geç
+                    } else { 
                         switchMode(POMODORO_DURATION, pomodoroBtn); 
-                    } else if (currentDuration === LONG_BREAK_DURATION) {
-                         // Basitçe: Eğer uzun moladaysak, tekrar çalışma moduna geç
-                         switchMode(POMODORO_DURATION, pomodoroBtn);
-                    } else {
-                         // Default olarak çalışma moduna geç
-                         switchMode(POMODORO_DURATION, pomodoroBtn);
                     }
                     alert(TRANSLATIONS[currentLanguage].alert_message);
                 }
@@ -653,18 +654,17 @@
             clearInterval(interval);
             
             if(pauseBtn.parentElement) {
-                pauseBtn.parentElement.replaceChild(startBtn, pauseBtn); 
+                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
             }
             startBtn.textContent = TRANSLATIONS[currentLanguage].continue_btn;
         }
         function resetTimer() { 
             pauseTimer(); 
             if(pauseBtn.parentElement) {
-                pauseBtn.parentElement.replaceChild(startBtn, pauseBtn); 
+                timerControlsDiv.replaceChild(startBtn, pauseBtn); 
             }
             startBtn.textContent = TRANSLATIONS[currentLanguage].start_btn;
             
-            // Mevcut moda göre süreyi sıfırla
             if(pomodoroBtn.classList.contains('active')) {
                 currentDuration = POMODORO_DURATION;
             } else if (shortBreakBtn.classList.contains('active')) {
@@ -687,7 +687,8 @@
             updateTimerDisplay();
         }
         
-        // --- DİĞER İŞLEVLER (Eksik Kısımlar Tamamlandı) ---
+        // --- DİĞER İŞLEVLER VE ARKA PLAN KONTROLÜ (ONARILDI) ---
+        
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -698,60 +699,81 @@
             }
         }
         
-        function changeBackground(fileName, buttonElement) {
+        // Arka planı değiştirme fonksiyonu
+        function changeBackground(optionFile, optionType, buttonElement) {
             const body = document.body;
             
-            // Arka planı tamamen siyah yap
-            if (fileName === 'pure-black') {
+            if (optionType === 'video') {
                 body.style.backgroundImage = 'none';
-                body.style.backgroundColor = '#000000';
-                body.style.backgroundBlendMode = 'none';
-            } else {
-                // Resmi kullan
-                body.style.backgroundImage = `url('${fileName}')`;
                 body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
                 body.style.backgroundBlendMode = 'overlay';
+                
+                // Video öğesini göster ve kaynağı ayarla
+                videoElement.style.display = 'block';
+                videoSource.src = optionFile; 
+                videoElement.load();
+                videoElement.play().catch(error => {
+                    console.error("Video oynatılırken otomatik oynatma hatası:", error);
+                });
+
+            } else {
+                // Video öğesini gizle
+                videoElement.style.display = 'none';
+
+                if (optionFile === 'pure-black') {
+                    body.style.backgroundImage = 'none';
+                    body.style.backgroundColor = '#000000';
+                    body.style.backgroundBlendMode = 'none';
+                } else {
+                    // Resim için dosya yolu kullan
+                    body.style.backgroundImage = `url('${optionFile}')`; 
+                    body.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                    body.style.backgroundBlendMode = 'overlay';
+                }
             }
 
-            // Aktif butonu işaretle
+            // Seçili butonu işaretle
             document.querySelectorAll('.bg-options button').forEach(btn => btn.classList.remove('selected'));
             if (buttonElement) {
                  buttonElement.classList.add('selected');
             }
         }
 
+        // Arka plan seçeneklerini panelde gösterme fonksiyonu
         function renderBackgroundOptions() {
             bgOptionsContainer.innerHTML = '';
             
-            // Mevcut arka plan bilgisini al
+            const isVideoActive = videoElement.style.display === 'block';
+            const isBlackActive = !isVideoActive && document.body.style.backgroundImage.includes('none') && document.body.style.backgroundColor === 'rgb(0, 0, 0)';
             const currentBgUrl = document.body.style.backgroundImage;
-            const isBlack = document.body.style.backgroundColor === 'rgb(0, 0, 0)';
-            
+
             BACKGROUND_OPTIONS.forEach(option => {
                 const button = document.createElement('button');
-                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey];
+                button.textContent = TRANSLATIONS[currentLanguage][option.nameKey]; 
                 
-                // Arka plan önizlemesini ayarla
-                if (option.file !== 'pure-black') {
-                     button.style.backgroundImage = `url('${option.file}')`;
-                     button.style.backgroundSize = 'cover';
-                } else {
-                     button.style.backgroundColor = '#000000';
+                if (option.thumbFile) {
+                    button.style.backgroundImage = `url('${option.thumbFile}')`;
+                }
+                if (option.thumbClass) {
+                    button.classList.add(option.thumbClass);
                 }
                 
-                // Seçili olanı işaretle
+                // Tıklama olayını tanımla
+                button.onclick = () => changeBackground(option.file, option.type, button);
+                
                 let isSelected = false;
-                if (option.file === 'pure-black' && isBlack) {
+                if (option.type === 'video' && isVideoActive) {
                     isSelected = true;
-                } else if (currentBgUrl.includes(option.file)) {
+                } else if (option.type === 'color' && isBlackActive) {
                     isSelected = true;
-                }
-
-                if (isSelected) {
-                    button.classList.add('selected');
+                } else if (option.type === 'image' && currentBgUrl.includes(option.file)) {
+                    isSelected = true;
                 }
                 
-                button.onclick = () => changeBackground(option.file, button);
+                if (isSelected) {
+                     button.classList.add('selected');
+                }
+                
                 bgOptionsContainer.appendChild(button);
             });
         }
@@ -762,28 +784,23 @@
         fullscreenBtn.addEventListener('click', toggleFullscreen);
 
         menuBtn.addEventListener('click', () => {
-            // Müzik paneli açıksa, kapat
             musicPanel.style.display = 'none';
 
             if (settingsPanel.style.display === 'block') {
                 settingsPanel.style.display = 'none';
             } else {
-                // Ayarlar açılırken inputları mevcut değerlerle doldur
                 pomodoroInput.value = POMODORO_DURATION / 60;
                 shortBreakInput.value = SHORT_BREAK_DURATION / 60;
                 longBreakInput.value = LONG_BREAK_DURATION / 60;
                 
-                renderBackgroundOptions();
+                renderBackgroundOptions(); 
                 settingsPanel.style.display = 'block';
             }
         });
         
-        // Müzik Menüsü Olay Dinleyicileri
         musicBtn.addEventListener('click', () => {
-            // Ayarlar açıksa, kapat
             settingsPanel.style.display = 'none';
 
-            // Müzik panelini aç/kapat
             if (musicPanel.style.display === 'block') {
                 musicPanel.style.display = 'none';
             } else {
@@ -794,6 +811,18 @@
         closeMusicBtn.addEventListener('click', () => {
             musicPanel.style.display = 'none';
         });
+        
+        soundToggleBtn.addEventListener('click', () => {
+            isSoundOn = !isSoundOn;
+            
+            if (isSoundOn) {
+                soundToggleBtn.textContent = '🔔';
+                soundToggleBtn.title = 'Zil Sesini Kapat';
+            } else {
+                soundToggleBtn.textContent = '🔕';
+                soundToggleBtn.title = 'Zil Sesini Aç';
+            }
+        });
 
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
@@ -803,16 +832,16 @@
         shortBreakBtn.addEventListener('click', () => { switchMode(SHORT_BREAK_DURATION, shortBreakBtn); });
         longBreakBtn.addEventListener('click', () => { switchMode(LONG_BREAK_DURATION, longBreakBtn); });
 
-        // Başlık için düzenlenebilirlik desteği
+
         mainTitle.addEventListener('blur', () => {
             if (mainTitle.textContent.trim() === '') {
-                mainTitle.textContent = 'YKS ZAMANI'; // Boş bırakılırsa varsayılana dön
+                mainTitle.textContent = 'YKS ZAMANI';
             }
         });
 
 
         window.setLanguage = translateUI;
-        window.applyNewDurations = applyNewDurations; // HTML'den çağrılmak için
+        window.applyNewDurations = applyNewDurations;
         window.changeBackground = changeBackground;
 
 
@@ -820,8 +849,9 @@
         mainTitle.setAttribute('data-initial', 'true');
         translateUI('tr');
         updateTimerDisplay();
-        // Varsayılan arka planı ayarla
-        changeBackground(BACKGROUND_OPTIONS[0].file);
+        
+        // Varsayılan arka planı (Odak Yolu Resmi) ayarla
+        changeBackground(BACKGROUND_OPTIONS[1].file, BACKGROUND_OPTIONS[1].type, null); 
     </script>
 </body>
 </html>
